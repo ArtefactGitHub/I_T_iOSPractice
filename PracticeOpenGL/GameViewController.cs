@@ -12,6 +12,8 @@ namespace PracticeOpenGL
     [Register("GameViewController")]
     public class GameViewController : GLKViewController, IGLKViewDelegate
     {
+        #region Enum
+
         enum Uniform
         {
             ModelViewProjection_Matrix,
@@ -26,7 +28,11 @@ namespace PracticeOpenGL
             Count
         }
 
+        #endregion
+
         int[] uniforms = new int[(int)Uniform.Count];
+
+        #region VertexData
 
         float[] cubeVertexData = {
 			// Data layout for each line below is:
@@ -74,6 +80,8 @@ namespace PracticeOpenGL
             -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
         };
 
+        #endregion
+
         int program;
 
         Matrix4 modelViewProjectionMatrix;
@@ -84,8 +92,6 @@ namespace PracticeOpenGL
         uint vertexBuffer;
 
         EAGLContext context { get; set; }
-
-        GLKBaseEffect effect { get; set; }
 
         [Export("initWithCoder:")]
         public GameViewController(NSCoder coder) : base(coder)
@@ -150,10 +156,6 @@ namespace PracticeOpenGL
 
             LoadShaders();
 
-            effect = new GLKBaseEffect();
-            effect.Light0.Enabled = true;
-            effect.Light0.DiffuseColor = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
-
             GL.Enable(EnableCap.DepthTest);
 
             GL.Oes.GenVertexArrays(1, out vertexArray);
@@ -177,8 +179,6 @@ namespace PracticeOpenGL
             GL.DeleteBuffers(1, ref vertexBuffer);
             GL.Oes.DeleteVertexArrays(1, ref vertexArray);
 
-            effect = null;
-
             if (program > 0)
             {
                 GL.DeleteProgram(program);
@@ -193,28 +193,14 @@ namespace PracticeOpenGL
             var aspect = (float)Math.Abs(View.Bounds.Size.Width / View.Bounds.Size.Height);
             var projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
 
-            effect.Transform.ProjectionMatrix = projectionMatrix;
+            var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
+            var modelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, -10.0f);
 
-            var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, -4.0f);
-            baseModelViewMatrix = Matrix4.CreateFromAxisAngle(new Vector3(0.0f, 1.0f, 0.0f), rotation) * baseModelViewMatrix;
-
-            // Compute the model view matrix for the object rendered with GLKit
-            var modelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, -1.5f);
-            modelViewMatrix = Matrix4.CreateFromAxisAngle(new Vector3(1.0f, 1.0f, 1.0f), rotation) * modelViewMatrix;
-            modelViewMatrix = modelViewMatrix * baseModelViewMatrix;
-
-            effect.Transform.ModelViewMatrix = modelViewMatrix;
-
-            // Compute the model view matrix for the object rendered with ES2
-            modelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, 1.5f);
-            modelViewMatrix = Matrix4.CreateFromAxisAngle(new Vector3(1.0f, 1.0f, 1.0f), rotation) * modelViewMatrix;
             modelViewMatrix = modelViewMatrix * baseModelViewMatrix;
 
             normalMatrix = new Matrix3(Matrix4.Transpose(Matrix4.Invert(modelViewMatrix)));
 
             modelViewProjectionMatrix = modelViewMatrix * projectionMatrix;
-
-            rotation += (float)TimeSinceLastUpdate * 0.5f;
         }
 
         void IGLKViewDelegate.DrawInRect(GLKView view, CoreGraphics.CGRect rect)
@@ -223,11 +209,6 @@ namespace PracticeOpenGL
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             GL.Oes.BindVertexArray(vertexArray);
-
-            // Render the object with GLKit
-            effect.PrepareToDraw();
-
-            GL.DrawArrays(BeginMode.Triangles, 0, 36);
 
             // Render the object again with ES2
             GL.UseProgram(program);
@@ -316,6 +297,8 @@ namespace PracticeOpenGL
 
         #endregion
 
+        #region Shader
+
         bool CompileShader(ShaderType type, string src, out int shader)
         {
             shader = GL.CreateShader(type);
@@ -323,11 +306,12 @@ namespace PracticeOpenGL
             GL.CompileShader(shader);
 
 #if DEBUG
-			int logLength = 0;
-			GL.GetShader (shader, ShaderParameter.InfoLogLength, out logLength);
-			if (logLength > 0) {
-				Console.WriteLine ("Shader compile log:\n{0}", GL.GetShaderInfoLog (shader));
-			}
+            int logLength = 0;
+            GL.GetShader(shader, ShaderParameter.InfoLogLength, out logLength);
+            if (logLength > 0)
+            {
+                Console.WriteLine("Shader compile log:\n{0}", GL.GetShaderInfoLog(shader));
+            }
 #endif
 
             int status = 0;
@@ -346,10 +330,10 @@ namespace PracticeOpenGL
             GL.LinkProgram(prog);
 
 #if DEBUG
-			int logLength = 0;
-			GL.GetProgram (prog, ProgramParameter.InfoLogLength, out logLength);
-			if (logLength > 0)
-				Console.WriteLine ("Program link log:\n{0}", GL.GetProgramInfoLog (prog));
+            int logLength = 0;
+            GL.GetProgram(prog, ProgramParameter.InfoLogLength, out logLength);
+            if (logLength > 0)
+                Console.WriteLine("Program link log:\n{0}", GL.GetProgramInfoLog(prog));
 #endif
             int status = 0;
             GL.GetProgram(prog, ProgramParameter.LinkStatus, out status);
@@ -372,5 +356,7 @@ namespace PracticeOpenGL
             GL.GetProgram(prog, ProgramParameter.LinkStatus, out status);
             return status != 0;
         }
+
+        #endregion
     }
 }
