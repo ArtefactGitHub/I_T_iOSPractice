@@ -43,8 +43,10 @@ namespace PracticeOpenGL.Source.Framework
         {
         }
 
-        public void OnSurfaceCreated()
+        public void OnSurfaceCreated(GLKView glkView)
         {
+            m_GLGraphics = new GLGraphics(glkView);
+
             lock (m_StateChanged)
             {
                 if (m_State == GLGameState.Initialized)

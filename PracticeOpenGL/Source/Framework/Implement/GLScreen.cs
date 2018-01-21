@@ -28,7 +28,7 @@ namespace PracticeOpenGL.Source.Framework
 
         public GLScreen(GLGame game) : base(game)
         {
-            SetupGL();
+            //SetupGL();
         }
 
         public override void Dispose()
@@ -42,10 +42,10 @@ namespace PracticeOpenGL.Source.Framework
             }
         }
 
-        protected virtual void SetupGL()
-        {
-            LoadShaders();
-        }
+        //protected virtual void SetupGL()
+        //{
+        //    LoadShaders();
+        //}
 
         #region Shader
 

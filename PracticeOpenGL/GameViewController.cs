@@ -118,7 +118,7 @@ namespace PracticeOpenGL
             SetupGL();
 
             m_Activity = new GLGameTest();
-            m_Activity.OnSurfaceCreated();
+            m_Activity.OnSurfaceCreated(view);
         }
 
         protected override void Dispose(bool disposing)
