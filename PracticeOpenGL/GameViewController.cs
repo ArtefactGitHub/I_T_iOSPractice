@@ -1,16 +1,15 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 using Foundation;
 using GLKit;
 using OpenGLES;
-using OpenTK;
-using OpenTK.Graphics.ES20;
+using PracticeOpenGL.Source.Framework;
+using PracticeOpenGL.Source.Workspace;
 
 namespace PracticeOpenGL
 {
     [Register("GameViewController")]
-    public class GameViewController : GLKViewController, IGLKViewDelegate
+    public class GameViewController : GLKViewController//, IGLKViewDelegate
     {
         #region Enum
 
@@ -30,66 +29,65 @@ namespace PracticeOpenGL
 
         #endregion
 
-        int[] uniforms = new int[(int)Uniform.Count];
+        //int[] uniforms = new int[(int)Uniform.Count];
 
         #region VertexData
 
-        float[] cubeVertexData = {
-			// Data layout for each line below is:
-			// positionX, positionY, positionZ,     normalX, normalY, normalZ,
-			0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
-            0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-            0.5f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
-            0.5f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+        //     float[] cubeVertexData = {
+        //// Data layout for each line below is:
+        //// positionX, positionY, positionZ,     normalX, normalY, normalZ,
+        //0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
+        //    0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
+        //    0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+        //    0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
+        //    0.5f, 0.5f, -0.5f,          1.0f, 0.0f, 0.0f,
+        //    0.5f, 0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
 
-            0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,
+        //    0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
+        //    -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
+        //    0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
+        //    0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
+        //    -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
+        //    -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,
 
-            -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,
+        //    -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,
+        //    -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
+        //    -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
+        //    -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
+        //    -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
+        //    -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,
 
-            -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-            -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-            -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-            0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,
+        //    -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,
+        //    0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
+        //    -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
+        //    -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
+        //    0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
+        //    0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,
 
-            0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,
-            -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-            -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,
+        //    0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,
+        //    -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+        //    0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+        //    0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+        //    -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
+        //    -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,
 
-            0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-            0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-            0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-            -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
-        };
+        //    0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,
+        //    -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
+        //    0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
+        //    0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
+        //    -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
+        //    -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
+        //};
 
         #endregion
 
-        int program;
+        //int program;
 
-        Matrix4 modelViewProjectionMatrix;
-        Matrix3 normalMatrix;
-        float rotation;
+        //Matrix4 modelViewProjectionMatrix;
+        //Matrix3 normalMatrix;
 
-        uint vertexArray;
-        uint vertexBuffer;
+        //uint vertexArray;
+        //uint vertexBuffer;
 
         EAGLContext context { get; set; }
 
@@ -98,8 +96,12 @@ namespace PracticeOpenGL
         {
         }
 
+        private GLGame m_Activity;
+
         public override void ViewDidLoad()
         {
+            Debug.WriteLine("ViewDidLoad()");
+
             base.ViewDidLoad();
 
             context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
@@ -114,10 +116,15 @@ namespace PracticeOpenGL
             view.DrawableDepthFormat = GLKViewDrawableDepthFormat.Format24;
 
             SetupGL();
+
+            m_Activity = new GLGameTest();
+            m_Activity.OnSurfaceCreated();
         }
 
         protected override void Dispose(bool disposing)
         {
+            Debug.WriteLine("Dispose() : " + disposing);
+
             base.Dispose(disposing);
 
             TearDownGL();
@@ -128,6 +135,8 @@ namespace PracticeOpenGL
 
         public override void DidReceiveMemoryWarning()
         {
+            Debug.WriteLine("DidReceiveMemoryWarning");
+
             base.DidReceiveMemoryWarning();
 
             if (IsViewLoaded && View.Window == null)
@@ -145,79 +154,95 @@ namespace PracticeOpenGL
             // Dispose of any resources that can be recreated.
         }
 
+        #region PrefersStatusBarHidden
         public override bool PrefersStatusBarHidden()
         {
+            Debug.WriteLine("PrefersStatusBarHidden()");
+
             return true;
         }
+        #endregion
 
         void SetupGL()
         {
             EAGLContext.SetCurrentContext(context);
 
-            LoadShaders();
+            //LoadShaders();
 
-            GL.Enable(EnableCap.DepthTest);
+            //GL.Enable(EnableCap.DepthTest);
 
-            GL.Oes.GenVertexArrays(1, out vertexArray);
-            GL.Oes.BindVertexArray(vertexArray);
+            //GL.Oes.GenVertexArrays(1, out vertexArray);
+            //GL.Oes.BindVertexArray(vertexArray);
 
-            GL.GenBuffers(1, out vertexBuffer);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBuffer);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(cubeVertexData.Length * sizeof(float)), cubeVertexData, BufferUsage.StaticDraw);
+            //GL.GenBuffers(1, out vertexBuffer);
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBuffer);
+            //GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(cubeVertexData.Length * sizeof(float)), cubeVertexData, BufferUsage.StaticDraw);
 
-            GL.EnableVertexAttribArray((int)GLKVertexAttrib.Position);
-            GL.VertexAttribPointer((int)GLKVertexAttrib.Position, 3, VertexAttribPointerType.Float, false, 24, new IntPtr(0));
-            GL.EnableVertexAttribArray((int)GLKVertexAttrib.Normal);
-            GL.VertexAttribPointer((int)GLKVertexAttrib.Normal, 3, VertexAttribPointerType.Float, false, 24, new IntPtr(12));
+            //GL.EnableVertexAttribArray((int)GLKVertexAttrib.Position);
+            //GL.VertexAttribPointer((int)GLKVertexAttrib.Position, 3, VertexAttribPointerType.Float, false, 24, new IntPtr(0));
+            //GL.EnableVertexAttribArray((int)GLKVertexAttrib.Normal);
+            //GL.VertexAttribPointer((int)GLKVertexAttrib.Normal, 3, VertexAttribPointerType.Float, false, 24, new IntPtr(12));
 
-            GL.Oes.BindVertexArray(0);
+            //GL.Oes.BindVertexArray(0);
         }
 
         void TearDownGL()
         {
             EAGLContext.SetCurrentContext(context);
-            GL.DeleteBuffers(1, ref vertexBuffer);
-            GL.Oes.DeleteVertexArrays(1, ref vertexArray);
+            //GL.DeleteBuffers(1, ref vertexBuffer);
+            //GL.Oes.DeleteVertexArrays(1, ref vertexArray);
 
-            if (program > 0)
-            {
-                GL.DeleteProgram(program);
-                program = 0;
-            }
+            //if (program > 0)
+            //{
+            //    GL.DeleteProgram(program);
+            //    program = 0;
+            //}
+
+            // 終了させる
+            m_Activity.IsFinishing = true;
+            m_Activity.OnPause();
         }
 
-        #region GLKView and GLKViewController delegate methods
+        #region GLKViewController methods
 
         public override void Update()
         {
-            var aspect = (float)Math.Abs(View.Bounds.Size.Width / View.Bounds.Size.Height);
-            var projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
+            //var aspect = (float)Math.Abs(View.Bounds.Size.Width / View.Bounds.Size.Height);
+            //var projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
 
-            var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
-            var modelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, -10.0f);
+            //var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
+            //var modelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, -10.0f);
 
-            modelViewMatrix = modelViewMatrix * baseModelViewMatrix;
+            //modelViewMatrix = modelViewMatrix * baseModelViewMatrix;
 
-            normalMatrix = new Matrix3(Matrix4.Transpose(Matrix4.Invert(modelViewMatrix)));
+            //normalMatrix = new Matrix3(Matrix4.Transpose(Matrix4.Invert(modelViewMatrix)));
 
-            modelViewProjectionMatrix = modelViewMatrix * projectionMatrix;
+            //modelViewProjectionMatrix = modelViewMatrix * projectionMatrix;
         }
 
-        void IGLKViewDelegate.DrawInRect(GLKView view, CoreGraphics.CGRect rect)
+        public override void DrawInRect(GLKView view, CoreGraphics.CGRect rect)
         {
-            GL.ClearColor(0.65f, 0.65f, 0.65f, 1.0f);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            //GL.ClearColor(0.65f, 0.65f, 0.65f, 1.0f);
+            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.Oes.BindVertexArray(vertexArray);
+            //GL.Oes.BindVertexArray(vertexArray);
 
-            // Render the object again with ES2
-            GL.UseProgram(program);
+            //// Render the object again with ES2
+            //GL.UseProgram(program);
 
-            GL.UniformMatrix4(uniforms[(int)Uniform.ModelViewProjection_Matrix], false, ref modelViewProjectionMatrix);
-            GL.UniformMatrix3(uniforms[(int)Uniform.Normal_Matrix], false, ref normalMatrix);
+            //GL.UniformMatrix4(uniforms[(int)Uniform.ModelViewProjection_Matrix], false, ref modelViewProjectionMatrix);
+            //GL.UniformMatrix3(uniforms[(int)Uniform.Normal_Matrix], false, ref normalMatrix);
 
-            GL.DrawArrays(BeginMode.Triangles, 0, 36);
+            //GL.DrawArrays(BeginMode.Triangles, 0, 36);
+
+            m_Activity.OnDrawFrame();
         }
+
+        #endregion
+
+#if false
+
+        #region Shader
 
         bool LoadShaders()
         {
@@ -295,10 +320,6 @@ namespace PracticeOpenGL
             return System.IO.File.ReadAllText(path);
         }
 
-        #endregion
-
-        #region Shader
-
         bool CompileShader(ShaderType type, string src, out int shader)
         {
             shader = GL.CreateShader(type);
@@ -358,5 +379,7 @@ namespace PracticeOpenGL
         }
 
         #endregion
+
+#endif
     }
 }
