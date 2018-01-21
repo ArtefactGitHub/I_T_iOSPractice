@@ -639,4 +639,9 @@ __pycache__/
 # should be stored in the .pubxml.user file.
 
 
+# ===============
+# Visual Studio
+*.csproj
+*.sln
+
 # End of https://www.gitignore.io/api/macos,xcode,swift,windows,android,jetbrains,visualstudio,xamarinstudio,androidstudio,visualstudiocode
