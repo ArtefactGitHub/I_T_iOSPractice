@@ -77,6 +77,13 @@ namespace PracticeOpenGL.Source.Framework.Implement
             string extension = Path.GetExtension(m_FileName);
             string baseFilename = Path.GetFileNameWithoutExtension(m_FileName);
 
+            // ディレクトリ構成の場合、パスを変更する
+            string directoryName = Path.GetDirectoryName(m_FileName);
+            if (!string.IsNullOrEmpty(directoryName))
+            {
+                baseFilename = string.Format("{0}/{1}", directoryName, baseFilename);
+            }
+
             string path = NSBundle.MainBundle.PathForResource(baseFilename, extension);
             NSData texData = NSData.FromFile(path);
 

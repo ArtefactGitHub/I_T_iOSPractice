@@ -28,11 +28,11 @@ namespace PracticeOpenGL.Source.Workspace
 
             public TestScreen(GLGame game) : base(game)
             {
-                this.m_GLGraphics = game.GetGLGraphics();
+                m_GLGraphics = game.GetGLGraphics();
 
-                this.m_ProgramPram = new GLProgramParameter("Shader", "Shader");
+                m_ProgramPram = new GLProgramParameter("Shader", "Shader");
 
-                this.m_Texture = new Texture(m_Game, "icon.png");
+                m_Texture = new Texture(m_Game, "Images/TestIcon.png");
 
                 GL.Enable(EnableCap.DepthTest);
                 GL.Enable(EnableCap.CullFace);
