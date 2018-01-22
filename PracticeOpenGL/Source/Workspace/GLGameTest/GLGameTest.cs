@@ -65,11 +65,6 @@ namespace PracticeOpenGL.Source.Workspace
 
             public override void Present(float deltaTime)
             {
-#if false
-                float g = ((int)deltaTime % 5) == 0 ? 0f : 0.5f;
-                GL.ClearColor(0.5f, g, 0f, 1f);
-                GL.Clear(ClearBufferMask.ColorBufferBit);
-#else
                 Vector3[] vertices =
                 {
                     new Vector3 { X = -0.5f, Y = -0.5f, Z = 0f },
@@ -89,35 +84,41 @@ namespace PracticeOpenGL.Source.Workspace
                     new TextureCoord { S = 0.0f, T = 0.0f},
                 };
 
-                GL.ClearColor(0f, 0f, 0f, 1f);
+                GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 if (m_ProgramPram != null)
                     m_ProgramPram.Use();
 
+                // ライトを設定
+                float lightAngle = deltaTime;
+                Vector3 lightDir = new Vector3((float)Math.Cos((float)lightAngle), -1.0f, (float)Math.Sin((float)lightAngle));
+                lightDir.Normalize();
+                GL.Uniform3(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "lightDirection"), lightDir);
+
+                // 頂点座標
                 GL.VertexAttribPointer(m_ProgramPram.PositionAttribute, 3, VertexAttribPointerType.Float, false, 0, vertices);
                 GL.EnableVertexAttribArray(m_ProgramPram.PositionAttribute);
 
+                // テクスチャ座標
                 GL.VertexAttribPointer(m_ProgramPram.TextureCoordinateAttribute, 2, VertexAttribPointerType.Float, false, 0, textureCoordinates);
                 GL.EnableVertexAttribArray(m_ProgramPram.TextureCoordinateAttribute);
 
-
+                // ビュー、プロジェクション行列
                 float aspect = (float)Math.Abs((float)m_GLGraphics.GetWidth() / m_GLGraphics.GetHeight());
-                Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
+                Vector3 eyePos = new Vector3(0.0f, 0.0f, 5.0f);
+                Vector3 lookAt = new Vector3(0.0f, 0.0f, 0.0f);
+                Vector3 eyeUp = new Vector3(0.0f, 1.0f, 0.0f);
+                Matrix4 viewMatrix = Matrix4.LookAt(eyePos, lookAt, eyeUp);
+                Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)System.Math.PI / 4.0f, (float)m_GLGraphics.GetWidth() / (float)m_GLGraphics.GetHeight(), 0.1f, 100.0f);
+                Matrix4 viewProjectionMatrix = viewMatrix * projectionMatrix;
+                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "viewProjection"),
+                                  false, ref viewProjectionMatrix);
 
-                Matrix4 baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
-                Matrix4 modelViewMatrix = Matrix4.CreateTranslation(0.0f, 0.0f, -1.0f);
-
-                modelViewMatrix = modelViewMatrix * baseModelViewMatrix;
-
-                Matrix3 normalMatrix = new Matrix3(Matrix4.Transpose(Matrix4.Invert(modelViewMatrix)));
-
-                Matrix4 modelViewProjectionMatrix = modelViewMatrix * projectionMatrix;
-
-                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "matrix"),
-                                  false,
-                                  ref modelViewProjectionMatrix);
-
+                // ワールド行列
+                Matrix4 worldMatrix = Matrix4.Identity;
+                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "world"),
+                                  false, ref worldMatrix);
 
                 GL.ActiveTexture(TextureUnit.Texture0);
                 if (m_Texture != null)
@@ -125,7 +126,6 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.Uniform1(m_ProgramPram.TextureUniform, 0);
 
                 GL.DrawArrays(BeginMode.Triangles, 0, vertices.Length);
-#endif
             }
         }
 

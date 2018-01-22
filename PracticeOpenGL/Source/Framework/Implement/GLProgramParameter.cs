@@ -1,50 +1,50 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace PracticeOpenGL.Source.Framework.Implement
 {
     public class GLProgramParameter
     {
-        public GLProgram GLProgram { get { return program; } }
+        public GLProgram GLProgram { get; private set; }
 
-        public int PositionAttribute { get { return positionAttribute; } }
-        public int TextureCoordinateAttribute { get { return textureCoordinateAttribute; } }
-        public int MatrixUniform { get { return matrixUniform; } }
-        public int TextureUniform { get { return textureUniform; } }
-
-        GLProgram program;
-        int positionAttribute,
-            textureCoordinateAttribute,
-            matrixUniform,
-            textureUniform;
+        public int PositionAttribute { get; private set; }
+        public int NormalAttribute { get; private set; }
+        public int TextureCoordinateAttribute { get; private set; }
+        public int WorldMatrixUniform { get; private set; }
+        public int ViewProjectionMatrixUniform { get; private set; }
+        public int LightDirectionMatrixUniform { get; private set; }
+        public int TextureUniform { get; private set; }
 
         public void Use()
         {
-            program.Use();
+            GLProgram.Use();
         }
 
         public GLProgramParameter(string vShaderFileName, string fShaderFileName)
         {
-            program = new GLProgram(vShaderFileName, fShaderFileName);
+            GLProgram = new GLProgram(vShaderFileName, fShaderFileName);
 
-            program.AddAttribute("position");
-            program.AddAttribute("textureCoordinates");
+            GLProgram.AddAttribute("position");
+            GLProgram.AddAttribute("normal");
+            GLProgram.AddAttribute("textureCoordinates");
 
-            if (!program.Link())
+            if (!GLProgram.Link())
             {
                 Debug.WriteLine("Link failed.");
-                Debug.WriteLine(string.Format("Program Log: {0}", program.ProgramLog()));
-                Debug.WriteLine(string.Format("Fragment Log: {0}", program.FragmentShaderLog()));
-                Debug.WriteLine(string.Format("Vertex Log: {0}", program.VertexShaderLog()));
+                Debug.WriteLine(string.Format("GLProgram Log: {0}", GLProgram.ProgramLog()));
+                Debug.WriteLine(string.Format("Fragment Log: {0}", GLProgram.FragmentShaderLog()));
+                Debug.WriteLine(string.Format("Vertex Log: {0}", GLProgram.VertexShaderLog()));
 
-                program = null;
+                GLProgram = null;
                 return;
             }
 
-            positionAttribute = program.GetAttributeIndex("position");
-            textureCoordinateAttribute = program.GetAttributeIndex("textureCoordinates");
-            matrixUniform = program.GetUniformIndex("matrix");
-            textureUniform = program.GetUniformIndex("texture");
+            PositionAttribute = GLProgram.GetAttributeIndex("position");
+            NormalAttribute = GLProgram.GetAttributeIndex("normal");
+            TextureCoordinateAttribute = GLProgram.GetAttributeIndex("textureCoordinates");
+            WorldMatrixUniform = GLProgram.GetUniformIndex("world");
+            ViewProjectionMatrixUniform = GLProgram.GetUniformIndex("viewProjection");
+            LightDirectionMatrixUniform = GLProgram.GetUniformIndex("lightDirection");
+            TextureUniform = GLProgram.GetUniformIndex("texture");
         }
     }
 }
