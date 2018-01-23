@@ -70,18 +70,18 @@ namespace PracticeOpenGL.Source.Workspace
                     new Vector3 { X = -0.5f, Y = -0.5f, Z = 0f },
                     new Vector3 { X = 0.5f, Y = -0.5f, Z = 0f },
                     new Vector3 { X = 0.5f, Y = 0.5f, Z = 0f },
-                    new Vector3 { X = 0.5f, Y = 0.5f, Z = 0f },
                     new Vector3 { X = -0.5f, Y = 0.5f, Z = 0f },
-                    new Vector3 { X = -0.5f, Y = -0.5f, Z = 0f },
+                };
+                ushort[] indecies = {
+                    0, 1, 2,
+                    2, 3, 0
                 };
                 TextureCoord[] textureCoordinates =
                 {
                     new TextureCoord { S = 0.0f, T = 0.0f},
                     new TextureCoord { S = 1.0f, T = 0.0f},
                     new TextureCoord { S = 1.0f, T = 1.0f},
-                    new TextureCoord { S = 1.0f, T = 1.0f},
                     new TextureCoord { S = 0.0f, T = 1.0f},
-                    new TextureCoord { S = 0.0f, T = 0.0f},
                 };
 
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
@@ -125,7 +125,7 @@ namespace PracticeOpenGL.Source.Workspace
                     m_Texture.Bind();
                 GL.Uniform1(m_ProgramPram.TextureUniform, 0);
 
-                GL.DrawArrays(BeginMode.Triangles, 0, vertices.Length);
+                GL.DrawElements(BeginMode.Triangles, indecies.Length, DrawElementsType.UnsignedShort, indecies);
             }
         }
 
