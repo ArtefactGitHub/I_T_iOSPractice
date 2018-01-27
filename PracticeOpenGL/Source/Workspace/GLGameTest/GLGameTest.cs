@@ -21,8 +21,35 @@ namespace PracticeOpenGL.Source.Workspace
             #region property
 
             GLGraphics m_GLGraphics;
+
             GLProgramParameter m_ProgramPram;
+
             Texture m_Texture;
+
+            #endregion
+
+            #region data
+
+            Vector3[] vertices =
+            {
+                new Vector3 { X = -0.5f, Y = -0.5f, Z = 0f },
+                new Vector3 { X = 0.5f, Y = -0.5f, Z = 0f },
+                new Vector3 { X = 0.5f, Y = 0.5f, Z = 0f },
+                new Vector3 { X = -0.5f, Y = 0.5f, Z = 0f },
+            };
+
+            ushort[] indecies = {
+                0, 1, 2,
+                2, 3, 0
+            };
+
+            TextureCoord[] textureCoordinates =
+            {
+                new TextureCoord { S = 0.0f, T = 0.0f},
+                new TextureCoord { S = 1.0f, T = 0.0f},
+                new TextureCoord { S = 1.0f, T = 1.0f},
+                new TextureCoord { S = 0.0f, T = 1.0f},
+            };
 
             #endregion
 
@@ -30,6 +57,11 @@ namespace PracticeOpenGL.Source.Workspace
             {
                 m_GLGraphics = game.GetGLGraphics();
 
+                Setup();
+            }
+
+            void Setup()
+            {
                 m_ProgramPram = new GLProgramParameter("Shader", "Shader");
 
                 m_Texture = new Texture(m_Game, "Images/TestIcon.png");
@@ -65,30 +97,16 @@ namespace PracticeOpenGL.Source.Workspace
 
             public override void Present(float deltaTime)
             {
-                Vector3[] vertices =
-                {
-                    new Vector3 { X = -0.5f, Y = -0.5f, Z = 0f },
-                    new Vector3 { X = 0.5f, Y = -0.5f, Z = 0f },
-                    new Vector3 { X = 0.5f, Y = 0.5f, Z = 0f },
-                    new Vector3 { X = -0.5f, Y = 0.5f, Z = 0f },
-                };
-                ushort[] indecies = {
-                    0, 1, 2,
-                    2, 3, 0
-                };
-                TextureCoord[] textureCoordinates =
-                {
-                    new TextureCoord { S = 0.0f, T = 0.0f},
-                    new TextureCoord { S = 1.0f, T = 0.0f},
-                    new TextureCoord { S = 1.0f, T = 1.0f},
-                    new TextureCoord { S = 0.0f, T = 1.0f},
-                };
-
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                if (m_ProgramPram != null)
-                    m_ProgramPram.Use();
+                if (m_ProgramPram == null)
+                {
+                    Debug.WriteLine("program is invalid");
+                    return;
+                }
+
+                m_ProgramPram.Use();
 
                 // ライトを設定
                 float lightAngle = deltaTime;
@@ -122,7 +140,9 @@ namespace PracticeOpenGL.Source.Workspace
 
                 GL.ActiveTexture(TextureUnit.Texture0);
                 if (m_Texture != null)
+                {
                     m_Texture.Bind();
+                }
                 GL.Uniform1(m_ProgramPram.TextureUniform, 0);
 
                 GL.DrawElements(BeginMode.Triangles, indecies.Length, DrawElementsType.UnsignedShort, indecies);
