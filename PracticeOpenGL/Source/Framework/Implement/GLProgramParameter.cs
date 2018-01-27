@@ -45,6 +45,8 @@ namespace PracticeOpenGL.Source.Framework.Implement
             ViewProjectionMatrixUniform = GLProgram.GetUniformIndex("viewProjection");
             LightDirectionMatrixUniform = GLProgram.GetUniformIndex("lightDirection");
             TextureUniform = GLProgram.GetUniformIndex("texture");
+
+            GLProgram.Use();
         }
     }
 }
