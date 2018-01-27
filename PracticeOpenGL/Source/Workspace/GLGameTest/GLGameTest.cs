@@ -25,6 +25,7 @@ namespace PracticeOpenGL.Source.Workspace
             GLProgramParameter m_ProgramParam;
 
             Texture m_Texture;
+            Texture m_TextureNotAlpha;
 
             #endregion
 
@@ -65,12 +66,14 @@ namespace PracticeOpenGL.Source.Workspace
                 m_ProgramParam = new GLProgramParameter("Shader", "Shader");
 
                 m_Texture = new Texture(m_Game, "Images/TestIcon.png");
+                m_TextureNotAlpha = new Texture(m_Game, "Images/TestIconNotAlpha.png");
 
                 GL.Enable(EnableCap.DepthTest);
                 GL.Enable(EnableCap.CullFace);
-                GL.Enable(EnableCap.Texture2D);
+
                 GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.Zero);
+                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                GL.Enable(EnableCap.Texture2D);
 
                 m_Vertices = new Vertices(vertices, indecies, textureCoordinates, m_ProgramParam);
             }
@@ -126,11 +129,26 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
                                   false, ref worldMatrix);
 
-                GL.ActiveTexture(TextureUnit.Texture0);
-                m_Texture.Bind();
-                GL.Uniform1(m_ProgramParam.TextureUniform, 0);
+                {
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    m_Texture.Bind();
+                    GL.Uniform1(m_ProgramParam.TextureUniform, 0);
 
-                m_Vertices.Draw();
+                    m_Vertices.Draw();
+                }
+
+                {
+                    var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 1.0f, 0.0f);
+                    worldMatrix = worldMatrix * baseModelViewMatrix;
+                    GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
+                                      false, ref worldMatrix);
+
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    m_TextureNotAlpha.Bind();
+                    GL.Uniform1(m_ProgramParam.TextureUniform, 0);
+
+                    m_Vertices.Draw();
+                }
             }
         }
 
