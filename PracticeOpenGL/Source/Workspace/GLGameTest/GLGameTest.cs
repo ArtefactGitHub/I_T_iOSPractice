@@ -22,7 +22,7 @@ namespace PracticeOpenGL.Source.Workspace
 
             GLGraphics m_GLGraphics;
 
-            GLProgramParameter m_ProgramPram;
+            GLProgramParameter m_ProgramParam;
 
             Texture m_Texture;
 
@@ -62,7 +62,7 @@ namespace PracticeOpenGL.Source.Workspace
 
             void Setup()
             {
-                m_ProgramPram = new GLProgramParameter("Shader", "Shader");
+                m_ProgramParam = new GLProgramParameter("Shader", "Shader");
 
                 m_Texture = new Texture(m_Game, "Images/TestIcon.png");
 
@@ -71,7 +71,11 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.Enable(EnableCap.Texture2D);
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.Zero);
+
+                m_Vertices = new Vertices(vertices, indecies, textureCoordinates, m_ProgramParam);
             }
+
+            Vertices m_Vertices;
 
             public override void Dispose()
             {
@@ -100,27 +104,11 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                if (m_ProgramPram == null)
-                {
-                    Debug.WriteLine("program is invalid");
-                    return;
-                }
-
-                m_ProgramPram.Use();
-
                 // ライトを設定
                 float lightAngle = deltaTime;
                 Vector3 lightDir = new Vector3((float)Math.Cos((float)lightAngle), -1.0f, (float)Math.Sin((float)lightAngle));
                 lightDir.Normalize();
-                GL.Uniform3(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "lightDirection"), lightDir);
-
-                // 頂点座標
-                GL.VertexAttribPointer(m_ProgramPram.PositionAttribute, 3, VertexAttribPointerType.Float, false, 0, vertices);
-                GL.EnableVertexAttribArray(m_ProgramPram.PositionAttribute);
-
-                // テクスチャ座標
-                GL.VertexAttribPointer(m_ProgramPram.TextureCoordinateAttribute, 2, VertexAttribPointerType.Float, false, 0, textureCoordinates);
-                GL.EnableVertexAttribArray(m_ProgramPram.TextureCoordinateAttribute);
+                GL.Uniform3(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "lightDirection"), lightDir);
 
                 // ビュー、プロジェクション行列
                 float aspect = (float)Math.Abs((float)m_GLGraphics.GetWidth() / m_GLGraphics.GetHeight());
@@ -130,22 +118,19 @@ namespace PracticeOpenGL.Source.Workspace
                 Matrix4 viewMatrix = Matrix4.LookAt(eyePos, lookAt, eyeUp);
                 Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)System.Math.PI / 4.0f, (float)m_GLGraphics.GetWidth() / (float)m_GLGraphics.GetHeight(), 0.1f, 100.0f);
                 Matrix4 viewProjectionMatrix = viewMatrix * projectionMatrix;
-                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "viewProjection"),
+                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "viewProjection"),
                                   false, ref viewProjectionMatrix);
 
                 // ワールド行列
                 Matrix4 worldMatrix = Matrix4.Identity;
-                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramPram.GLProgram.Program, "world"),
+                GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
                                   false, ref worldMatrix);
 
                 GL.ActiveTexture(TextureUnit.Texture0);
-                if (m_Texture != null)
-                {
-                    m_Texture.Bind();
-                }
-                GL.Uniform1(m_ProgramPram.TextureUniform, 0);
+                m_Texture.Bind();
+                GL.Uniform1(m_ProgramParam.TextureUniform, 0);
 
-                GL.DrawElements(BeginMode.Triangles, indecies.Length, DrawElementsType.UnsignedShort, indecies);
+                m_Vertices.Draw();
             }
         }
 

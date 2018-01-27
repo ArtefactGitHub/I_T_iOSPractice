@@ -11,7 +11,7 @@ namespace PracticeOpenGL.Source.Framework.Implement
     //    public float alpha;
     //}
 
-    struct TextureCoord
+    public struct TextureCoord
     {
         public float S;
         public float T;
