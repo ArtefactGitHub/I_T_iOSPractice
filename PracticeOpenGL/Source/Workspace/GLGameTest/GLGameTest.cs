@@ -33,10 +33,10 @@ namespace PracticeOpenGL.Source.Workspace
 
             Vector3[] vertices =
             {
-                new Vector3 { X = -0.5f, Y = -0.5f, Z = 0f },
-                new Vector3 { X = 0.5f, Y = -0.5f, Z = 0f },
-                new Vector3 { X = 0.5f, Y = 0.5f, Z = 0f },
-                new Vector3 { X = -0.5f, Y = 0.5f, Z = 0f },
+                new Vector3(200.0f, 200.0f, 0.0f),
+                new Vector3(200.0f, 400.0f, 0.0f),
+                new Vector3(400.0f, 400.0f, 0.0f),
+                new Vector3(400.0f, 200.0f, 0.0f),
             };
 
             ushort[] indecies = {
@@ -44,12 +44,13 @@ namespace PracticeOpenGL.Source.Workspace
                 2, 3, 0
             };
 
+            // 左下（0, 0)、右上（1, 1）
             TextureCoord[] textureCoordinates =
             {
+                new TextureCoord { S = 0.0f, T = 1.0f},
                 new TextureCoord { S = 0.0f, T = 0.0f},
                 new TextureCoord { S = 1.0f, T = 0.0f},
                 new TextureCoord { S = 1.0f, T = 1.0f},
-                new TextureCoord { S = 0.0f, T = 1.0f},
             };
 
             #endregion
@@ -104,6 +105,7 @@ namespace PracticeOpenGL.Source.Workspace
 
             public override void Present(float deltaTime)
             {
+                GL.Viewport(0, 0, m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight());
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -114,13 +116,26 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.Uniform3(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "lightDirection"), lightDir);
 
                 // ビュー、プロジェクション行列
+#if false
+                // 透視投影
                 float aspect = (float)Math.Abs((float)m_GLGraphics.GetWidth() / m_GLGraphics.GetHeight());
                 Vector3 eyePos = new Vector3(0.0f, 0.0f, 5.0f);
                 Vector3 lookAt = new Vector3(0.0f, 0.0f, 0.0f);
                 Vector3 eyeUp = new Vector3(0.0f, 1.0f, 0.0f);
                 Matrix4 viewMatrix = Matrix4.LookAt(eyePos, lookAt, eyeUp);
+
                 Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)System.Math.PI / 4.0f, (float)m_GLGraphics.GetWidth() / (float)m_GLGraphics.GetHeight(), 0.1f, 100.0f);
                 Matrix4 viewProjectionMatrix = viewMatrix * projectionMatrix;
+#else
+                // 平行投影
+                Matrix4 viewProjectionMatrix = Matrix4.Identity;
+                Matrix4.CreateOrthographicOffCenter(
+                0f, m_GLGraphics.GetWidth(),
+                m_GLGraphics.GetHeight(), 0f,
+                0f, 1f,
+                out viewProjectionMatrix);
+#endif
+
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "viewProjection"),
                                   false, ref viewProjectionMatrix);
 
@@ -138,7 +153,7 @@ namespace PracticeOpenGL.Source.Workspace
                 }
 
                 {
-                    var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 1.0f, 0.0f);
+                    var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 100.0f, 0.0f);
                     worldMatrix = worldMatrix * baseModelViewMatrix;
                     GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
                                       false, ref worldMatrix);

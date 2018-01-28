@@ -12,14 +12,14 @@ namespace PracticeOpenGL.Source.Framework
             this.m_GlView = glView;
         }
 
-        public nint GetWidth()
+        public int GetWidth()
         {
-            return m_GlView.DrawableWidth;
+            return (int)m_GlView.DrawableWidth;
         }
 
-        public nint GetHeight()
+        public int GetHeight()
         {
-            return m_GlView.DrawableHeight;
+            return (int)m_GlView.DrawableHeight;
         }
     }
 }
