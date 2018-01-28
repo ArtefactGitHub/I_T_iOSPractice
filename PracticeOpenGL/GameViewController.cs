@@ -114,6 +114,9 @@ namespace PracticeOpenGL
             var view = (GLKView)View;
             view.Context = context;
             view.DrawableDepthFormat = GLKViewDrawableDepthFormat.Format24;
+            // フレームバッファがバインドされていないので、
+            // フレームバッファ関連のOpenGL関数を使うにはこの方法で事前にバインドしておく
+            view.BindDrawable();
 
             SetupGL();
 

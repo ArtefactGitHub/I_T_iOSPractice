@@ -46,6 +46,7 @@ namespace PracticeOpenGL.Source.Framework
         public void OnSurfaceCreated(GLKView glkView)
         {
             m_GLGraphics = new GLGraphics(glkView);
+            Debug.WriteLine(string.Format("Width:{0} / Height:{1}", m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight()));
 
             lock (m_StateChanged)
             {

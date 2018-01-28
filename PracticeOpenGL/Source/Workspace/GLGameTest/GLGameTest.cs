@@ -97,20 +97,12 @@ namespace PracticeOpenGL.Source.Workspace
             public override void Resume()
             {
                 Debug.WriteLine("Resume");
-            }
 
-            public override void Update(float deltaTime)
-            {
-            }
-
-            public override void Present(float deltaTime)
-            {
                 GL.Viewport(0, 0, m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight());
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
-                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 // ライトを設定
-                float lightAngle = deltaTime;
+                float lightAngle = 45.0f;
                 Vector3 lightDir = new Vector3((float)Math.Cos((float)lightAngle), -1.0f, (float)Math.Sin((float)lightAngle));
                 lightDir.Normalize();
                 GL.Uniform3(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "lightDirection"), lightDir);
@@ -127,6 +119,8 @@ namespace PracticeOpenGL.Source.Workspace
                 Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)System.Math.PI / 4.0f, (float)m_GLGraphics.GetWidth() / (float)m_GLGraphics.GetHeight(), 0.1f, 100.0f);
                 Matrix4 viewProjectionMatrix = viewMatrix * projectionMatrix;
 #else
+                Debug.WriteLine(string.Format("W:{0} / H:{1}", m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight()));
+
                 // 平行投影
                 Matrix4 viewProjectionMatrix = Matrix4.Identity;
                 Matrix4.CreateOrthographicOffCenter(
@@ -138,6 +132,15 @@ namespace PracticeOpenGL.Source.Workspace
 
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "viewProjection"),
                                   false, ref viewProjectionMatrix);
+            }
+
+            public override void Update(float deltaTime)
+            {
+            }
+
+            public override void Present(float deltaTime)
+            {
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 // ワールド行列
                 Matrix4 worldMatrix = Matrix4.Identity;
