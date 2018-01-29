@@ -25,18 +25,24 @@ namespace PracticeOpenGL.Source.Workspace
             GLProgramParameter m_ProgramParam;
 
             Texture m_Texture;
+
             Texture m_TextureNotAlpha;
 
-            #endregion
+            Camera2D m_Camera;
+
+            Vertices m_Vertices;
+
+            const float FRUSTRUM_WIDTH = 720.0f;
+            const float FRUSTRUM_HEIGHT = 1280.0f;
 
             #region data
 
             Vector3[] vertices =
             {
-                new Vector3(200.0f, 200.0f, 0.0f),
-                new Vector3(200.0f, 400.0f, 0.0f),
+                new Vector3(0.0f, 0.0f, 0.0f),
+                new Vector3(0.0f, 400.0f, 0.0f),
                 new Vector3(400.0f, 400.0f, 0.0f),
-                new Vector3(400.0f, 200.0f, 0.0f),
+                new Vector3(400.0f, 0.0f, 0.0f),
             };
 
             ushort[] indecies = {
@@ -55,9 +61,12 @@ namespace PracticeOpenGL.Source.Workspace
 
             #endregion
 
+            #endregion
+
             public TestScreen(GLGame game) : base(game)
             {
                 m_GLGraphics = game.GetGLGraphics();
+                m_Camera = new Camera2D(game.GetGLGraphics(), FRUSTRUM_WIDTH, FRUSTRUM_HEIGHT);
 
                 Setup();
             }
@@ -69,6 +78,7 @@ namespace PracticeOpenGL.Source.Workspace
                 m_Texture = new Texture(m_Game, "Images/TestIcon.png");
                 m_TextureNotAlpha = new Texture(m_Game, "Images/TestIconNotAlpha.png");
 
+                GL.FrontFace(FrontFaceDirection.Ccw);
                 GL.Enable(EnableCap.DepthTest);
                 GL.Enable(EnableCap.CullFace);
 
@@ -78,8 +88,6 @@ namespace PracticeOpenGL.Source.Workspace
 
                 m_Vertices = new Vertices(vertices, indecies, textureCoordinates, m_ProgramParam);
             }
-
-            Vertices m_Vertices;
 
             public override void Dispose()
             {
@@ -98,7 +106,6 @@ namespace PracticeOpenGL.Source.Workspace
             {
                 Debug.WriteLine("Resume");
 
-                GL.Viewport(0, 0, m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight());
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
 
                 // ライトを設定
@@ -107,29 +114,9 @@ namespace PracticeOpenGL.Source.Workspace
                 lightDir.Normalize();
                 GL.Uniform3(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "lightDirection"), lightDir);
 
-                // ビュー、プロジェクション行列
-#if false
-                // 透視投影
-                float aspect = (float)Math.Abs((float)m_GLGraphics.GetWidth() / m_GLGraphics.GetHeight());
-                Vector3 eyePos = new Vector3(0.0f, 0.0f, 5.0f);
-                Vector3 lookAt = new Vector3(0.0f, 0.0f, 0.0f);
-                Vector3 eyeUp = new Vector3(0.0f, 1.0f, 0.0f);
-                Matrix4 viewMatrix = Matrix4.LookAt(eyePos, lookAt, eyeUp);
-
-                Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)System.Math.PI / 4.0f, (float)m_GLGraphics.GetWidth() / (float)m_GLGraphics.GetHeight(), 0.1f, 100.0f);
-                Matrix4 viewProjectionMatrix = viewMatrix * projectionMatrix;
-#else
-                Debug.WriteLine(string.Format("W:{0} / H:{1}", m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight()));
-
-                // 平行投影
-                Matrix4 viewProjectionMatrix = Matrix4.Identity;
-                Matrix4.CreateOrthographicOffCenter(
-                0f, m_GLGraphics.GetWidth(),
-                m_GLGraphics.GetHeight(), 0f,
-                0f, 1f,
-                out viewProjectionMatrix);
-#endif
-
+                // カメラを設定
+                m_Camera.CreateViewportMatrix();
+                Matrix4 viewProjectionMatrix = m_Camera.ViewProjectionMatrix;
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "viewProjection"),
                                   false, ref viewProjectionMatrix);
             }
@@ -141,6 +128,8 @@ namespace PracticeOpenGL.Source.Workspace
             public override void Present(float deltaTime)
             {
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                m_Camera.SetViewport();
 
                 // ワールド行列
                 Matrix4 worldMatrix = Matrix4.Identity;
