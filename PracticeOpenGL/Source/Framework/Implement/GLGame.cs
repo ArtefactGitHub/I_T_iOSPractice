@@ -72,8 +72,10 @@ namespace PracticeOpenGL.Source.Framework
             {
                 m_Stopwatch.Stop();
 
+                // 前回計測時間からの経過時間の取得
                 float deltaTime = m_Stopwatch.ElapsedTicks / 10000000.0f;
 
+                m_Stopwatch.Reset();
                 m_Stopwatch.Start();
 
                 m_Screen.Update(deltaTime);
