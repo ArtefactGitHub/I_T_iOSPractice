@@ -30,13 +30,17 @@ namespace PracticeOpenGL.Source.Workspace
 
             Camera2D m_Camera;
 
-            Vertices m_Vertices;
+            TextureRegion m_RegionUL;
+            TextureRegion m_RegionUR;
+
+            SpriteBatcher m_SpriteBatcher;
 
             const float FRUSTRUM_WIDTH = 720.0f;
             const float FRUSTRUM_HEIGHT = 1280.0f;
 
             #region data
 
+            // 左上が原点
             Vector3[] vertices =
             {
                 new Vector3(0.0f, 0.0f, 0.0f),
@@ -50,13 +54,14 @@ namespace PracticeOpenGL.Source.Workspace
                 2, 3, 0
             };
 
-            // 左下（0, 0)、右上（1, 1）
+            // 左上が原点（シェーダで上下反転させている）
+            // https://ja.wikibooks.org/wiki/OpenGL%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0/%E3%83%A2%E3%83%80%E3%83%B3OpenGL_%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB_06
             TextureCoord[] textureCoordinates =
             {
-                new TextureCoord { S = 0.0f, T = 1.0f},
                 new TextureCoord { S = 0.0f, T = 0.0f},
-                new TextureCoord { S = 1.0f, T = 0.0f},
+                new TextureCoord { S = 0.0f, T = 1.0f},
                 new TextureCoord { S = 1.0f, T = 1.0f},
+                new TextureCoord { S = 1.0f, T = 0.0f},
             };
 
             #endregion
@@ -75,8 +80,7 @@ namespace PracticeOpenGL.Source.Workspace
             {
                 m_ProgramParam = new GLProgramParameter("Shader", "Shader");
 
-                m_Texture = new Texture(m_Game, "Images/TestIcon.png");
-                m_TextureNotAlpha = new Texture(m_Game, "Images/TestIconNotAlpha.png");
+                m_SpriteBatcher = new SpriteBatcher(m_GLGraphics, m_ProgramParam, 100);
 
                 GL.FrontFace(FrontFaceDirection.Ccw);
                 GL.Enable(EnableCap.DepthTest);
@@ -85,8 +89,6 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Enable(EnableCap.Texture2D);
-
-                m_Vertices = new Vertices(vertices, indecies, textureCoordinates, m_ProgramParam);
             }
 
             public override void Dispose()
@@ -119,6 +121,11 @@ namespace PracticeOpenGL.Source.Workspace
                 Matrix4 viewProjectionMatrix = m_Camera.ViewProjectionMatrix;
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "viewProjection"),
                                   false, ref viewProjectionMatrix);
+
+                m_Texture = new Texture(m_Game, "Images/TestIconAtlas.png");
+
+                m_RegionUL = new TextureRegion(m_Texture, 0, 0, 128, 128);
+                m_RegionUR = new TextureRegion(m_Texture, 128, 0, 128, 128);
             }
 
             public override void Update(float deltaTime)
@@ -136,26 +143,14 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
                                   false, ref worldMatrix);
 
-                {
-                    GL.ActiveTexture(TextureUnit.Texture0);
-                    m_Texture.Bind();
-                    GL.Uniform1(m_ProgramParam.TextureUniform, 0);
-
-                    m_Vertices.Draw();
-                }
+                m_SpriteBatcher.BeginBatch(m_Texture);
 
                 {
-                    var baseModelViewMatrix = Matrix4.CreateTranslation(0.0f, 100.0f, 0.0f);
-                    worldMatrix = worldMatrix * baseModelViewMatrix;
-                    GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
-                                      false, ref worldMatrix);
-
-                    GL.ActiveTexture(TextureUnit.Texture0);
-                    m_TextureNotAlpha.Bind();
-                    GL.Uniform1(m_ProgramParam.TextureUniform, 0);
-
-                    m_Vertices.Draw();
+                    m_SpriteBatcher.DrawSprite(0, 600, 128.0f, 128.0f, m_RegionUL);
+                    m_SpriteBatcher.DrawSprite(128.0f, 0, 128.0f, 128.0f, m_RegionUR);
                 }
+
+                m_SpriteBatcher.EndBatch();
             }
         }
 
