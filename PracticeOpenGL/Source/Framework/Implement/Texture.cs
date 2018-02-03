@@ -12,6 +12,10 @@ namespace PracticeOpenGL.Source.Framework.Implement
     {
         #region property
 
+        public int Width { get; private set; }
+
+        public int Height { get; private set; }
+
         GLGraphics m_GLGraphics;
 
         string m_FileName = string.Empty;
@@ -49,6 +53,9 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
         public void Reload()
         {
+            Width = 0;
+            Height = 0;
+
             Load();
         }
 
@@ -107,6 +114,9 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (int)width, (int)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, imageData);
             context.Dispose();
+
+            Width = (int)width;
+            Height = (int)height;
         }
 
         void GenAndBindTexture()
