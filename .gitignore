@@ -641,7 +641,7 @@ __pycache__/
 
 # ===============
 # Visual Studio
-*.csproj
-*.sln
+#*.csproj
+#*.sln
 
 # End of https://www.gitignore.io/api/macos,xcode,swift,windows,android,jetbrains,visualstudio,xamarinstudio,androidstudio,visualstudiocode
