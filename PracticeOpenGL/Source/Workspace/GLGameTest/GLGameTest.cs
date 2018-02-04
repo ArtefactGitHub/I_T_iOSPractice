@@ -5,7 +5,7 @@ using PracticeOpenGL.Source.Framework.Implement;
 using OpenTK;
 using System;
 
-namespace PracticeOpenGL.Source.Workspace
+namespace PracticeOpenGL.Source.Workspace.GLGameTest
 {
     public class GLGameTest : GLGame
     {
@@ -22,18 +22,20 @@ namespace PracticeOpenGL.Source.Workspace
 
             GLGraphics m_GLGraphics;
 
+            SpriteBatcher m_SpriteBatcher;
+
             GLProgramParameter m_ProgramParam;
 
             Texture m_Texture;
 
-            Texture m_TextureNotAlpha;
-
             Camera2D m_Camera;
 
             TextureRegion m_RegionUL;
-            TextureRegion m_RegionUR;
 
-            SpriteBatcher m_SpriteBatcher;
+            Animation m_Animation;
+            AnimationSample m_AnimationSample;
+
+            Texture m_TextureAnimation;
 
             const float FRUSTRUM_WIDTH = 720.0f;
             const float FRUSTRUM_HEIGHT = 1280.0f;
@@ -72,6 +74,8 @@ namespace PracticeOpenGL.Source.Workspace
             {
                 m_GLGraphics = game.GetGLGraphics();
                 m_Camera = new Camera2D(game.GetGLGraphics(), FRUSTRUM_WIDTH, FRUSTRUM_HEIGHT);
+
+                m_AnimationSample = new AnimationSample();
 
                 Setup();
             }
@@ -122,14 +126,22 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "viewProjection"),
                                   false, ref viewProjectionMatrix);
 
-                m_Texture = new Texture(m_Game, "Images/TestIconAtlas.png");
+                m_Texture = new Texture(m_Game, "Images/AnimationSample.png");
+                m_RegionUL = new TextureRegion(m_Texture, 0, 0, 64, 64);
 
-                m_RegionUL = new TextureRegion(m_Texture, 0, 0, 128, 128);
-                m_RegionUR = new TextureRegion(m_Texture, 128, 0, 128, 128);
+                m_TextureAnimation = new Texture(m_Game, "Images/AnimationSample.png");
+                m_Animation = new Animation(0.2f, new TextureRegion[]
+                {
+                    new TextureRegion(m_TextureAnimation, 0, 0, 64, 64),
+                    new TextureRegion(m_TextureAnimation, 64, 0, 64, 64),
+                    new TextureRegion(m_TextureAnimation, 128, 0, 64, 64),
+                    new TextureRegion(m_TextureAnimation, 192, 0, 64, 64),
+                });
             }
 
             public override void Update(float deltaTime)
             {
+                m_AnimationSample.Update(deltaTime);
             }
 
             public override void Present(float deltaTime)
@@ -143,13 +155,19 @@ namespace PracticeOpenGL.Source.Workspace
                 GL.UniformMatrix4(GL.GetUniformLocation(m_ProgramParam.GLProgram.Program, "world"),
                                   false, ref worldMatrix);
 
+                // スプライトの描画
                 m_SpriteBatcher.BeginBatch(m_Texture);
-
                 {
                     m_SpriteBatcher.DrawSprite(0, 600, 128.0f, 128.0f, m_RegionUL);
-                    m_SpriteBatcher.DrawSprite(128.0f, 0, 128.0f, 128.0f, m_RegionUR);
                 }
+                m_SpriteBatcher.EndBatch();
 
+                // アニメーションの描画
+                m_SpriteBatcher.BeginBatch(m_TextureAnimation);
+                {
+                    TextureRegion keyFrame = m_Animation.GetKeyFrame(m_AnimationSample.m_Time, Animation.ANIMATION_LOOPING);
+                    m_SpriteBatcher.DrawSprite(300, 600, 64, 64, keyFrame);
+                }
                 m_SpriteBatcher.EndBatch();
             }
         }

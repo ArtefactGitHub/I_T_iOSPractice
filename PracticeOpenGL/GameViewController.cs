@@ -6,6 +6,7 @@ using OpenGLES;
 using OpenTK.Graphics.ES20;
 using PracticeOpenGL.Source.Framework;
 using PracticeOpenGL.Source.Workspace;
+using PracticeOpenGL.Source.Workspace.GLGameTest;
 
 namespace PracticeOpenGL
 {

@@ -123,6 +123,7 @@
     <Compile Include="Source\Framework\Implement\TextureRegion.cs" />
     <Compile Include="Source\Framework\Implement\SpriteBatcher.cs" />
     <Compile Include="Source\Framework\Implement\Animation.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\AnimationSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Shader.fsh" />
