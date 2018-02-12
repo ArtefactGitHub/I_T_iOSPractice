@@ -1,12 +1,13 @@
-﻿using System.Diagnostics;
-
+﻿using System;
+using System.Diagnostics;
+using CoreGraphics;
 using Foundation;
 using GLKit;
 using OpenGLES;
-using OpenTK.Graphics.ES20;
 using PracticeOpenGL.Source.Framework;
-using PracticeOpenGL.Source.Workspace;
+using PracticeOpenGL.Source.Framework.Implement.Debugs;
 using PracticeOpenGL.Source.Workspace.GLGameTest;
+using UIKit;
 
 namespace PracticeOpenGL
 {
@@ -93,12 +94,52 @@ namespace PracticeOpenGL
 
         EAGLContext context { get; set; }
 
+        GLGame m_Activity;
+
+#if DEBUG
+        /** 表示領域に対するデバッグログビューアーの幅の割合 */
+        float DEBUG_LOG_VIEWER_WIDTH_RATIO = (2.0f / 3.0f);
+        /** 表示領域に対するデバッグログビューアーの高さの割合 */
+        float DEBUG_LOG_VIEWER_HEIGHT_RATIO = (1.0f / 2.0f);
+        /** デバッグログビューアーの行数 */
+        int DEBUG_LOG_VIEWER_MAX_TEXT_COUNT = 40;
+        /** デバッグログビューアーの背景色 */
+        UIColor DEBUG_LOG_VIEWER_BACKGROUND_COLOR = new UIColor(0.5f, 0.5f, 0.5f, 0.5f);
+#endif
+
+        public GameViewController() { }
+
+        public override void TouchesBegan(NSSet touches, UIKit.UIEvent evt)
+        {
+            base.TouchesBegan(touches, evt);
+
+            UITouch touch = touches.AnyObject as UITouch;
+            if (touch != null)
+            {
+                Debug.WriteLine(touch.ToString());
+
+                if (touch.TapCount == 2)
+                {
+                    // do something with the double touch.
+                    Debug.WriteLine("double touch");
+                }
+            }
+        }
+        public override void TouchesEnded(NSSet touches, UIEvent evt)
+        {
+            base.TouchesEnded(touches, evt);
+            Debug.WriteLine("TouchesEnded");
+        }
+        public override void TouchesCancelled(NSSet touches, UIEvent evt)
+        {
+            base.TouchesCancelled(touches, evt);
+            Debug.WriteLine("TouchesCancelled");
+        }
+
         [Export("initWithCoder:")]
         public GameViewController(NSCoder coder) : base(coder)
         {
         }
-
-        private GLGame m_Activity;
 
         public override void ViewDidLoad()
         {
@@ -120,6 +161,70 @@ namespace PracticeOpenGL
             // フレームバッファがバインドされていないので、
             // フレームバッファ関連のOpenGL関数を使うにはこの方法で事前にバインドしておく
             view.BindDrawable();
+
+#if DEBUG
+            // デバッグログビューアーの作成
+            var debugLogViewer = DebugLogViewer.CreateView(
+                0, 0,
+                (float)(view.Bounds.Width * DEBUG_LOG_VIEWER_WIDTH_RATIO), (float)(view.Bounds.Height * DEBUG_LOG_VIEWER_HEIGHT_RATIO),
+                DEBUG_LOG_VIEWER_MAX_TEXT_COUNT,
+                DEBUG_LOG_VIEWER_BACKGROUND_COLOR,
+                UITextAlignment.Left);
+            view.AddSubview(debugLogViewer);
+#endif
+
+            View.AddGestureRecognizer(new UITapGestureRecognizer((UITapGestureRecognizer obj) =>
+            {
+                CGPoint p = obj.LocationInView(View);
+                Debug.WriteLine(string.Format("Tap {0}", p));
+                Debug.WriteLine(string.Format("View {0}/{1}", view.DrawableWidth, view.DrawableHeight));
+
+                CGPoint from = view.ConvertPointFromView(p, View);
+                CGPoint to = view.ConvertPointToView(p, View);
+                Debug.WriteLine(string.Format("fromto {0}/{1}", from, to));
+
+
+                Debug.WriteLine(string.Format("view.ContentScaleFactor {0}", view.ContentScaleFactor));
+                Debug.WriteLine(string.Format("view.Bounds {0}", view.Bounds));
+                nfloat xR = p.X / view.Bounds.Width;
+                nfloat yR = p.Y / view.Bounds.Height;
+                nfloat x = view.DrawableWidth * xR;
+                nfloat y = view.DrawableHeight * yR;
+                Debug.WriteLine(string.Format("xy {0}/{1}", x, y));
+
+                DebugLogViewer.WriteLine(string.Format("xy {0}/{1}", x, y));
+
+                x = 720 * xR;
+                y = 1280 * yR;
+                Debug.WriteLine(string.Format("xy {0}/{1}", x, y));
+            })
+            {
+                //NumberOfTapsRequired = 2
+            });
+            View.AddGestureRecognizer(new UIPinchGestureRecognizer((obj) =>
+            {
+                var scale = obj.Scale;
+                var v = obj.Velocity;
+                Debug.WriteLine("Pinch. scale:{0}, velocity:{1}", scale, v);
+            }));
+            View.AddGestureRecognizer(new UISwipeGestureRecognizer((UISwipeGestureRecognizer obj) =>
+            {
+                Debug.WriteLine("Swipe Left.");
+            })
+            {
+                Direction = UISwipeGestureRecognizerDirection.Left
+            });
+            View.AddGestureRecognizer(new UISwipeGestureRecognizer((obj) =>
+            {
+                Debug.WriteLine("Swipe Right.");
+            })
+            {
+                Direction = UISwipeGestureRecognizerDirection.Right
+            });
+            View.AddGestureRecognizer(new UILongPressGestureRecognizer(lp =>
+            {
+                Debug.WriteLine("Long press.");
+            }));
 
             SetupGL();
 
@@ -205,8 +310,11 @@ namespace PracticeOpenGL
             //}
 
             // 終了させる
-            m_Activity.IsFinishing = true;
-            m_Activity.OnPause();
+            if (m_Activity != null)
+            {
+                m_Activity.IsFinishing = true;
+                m_Activity.OnPause();
+            }
         }
 
         #region GLKViewController methods

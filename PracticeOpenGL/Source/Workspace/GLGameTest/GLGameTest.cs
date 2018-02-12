@@ -4,6 +4,7 @@ using PracticeOpenGL.Source.Framework;
 using PracticeOpenGL.Source.Framework.Implement;
 using OpenTK;
 using System;
+using PracticeOpenGL.Source.Framework.Implement.Debugs;
 
 namespace PracticeOpenGL.Source.Workspace.GLGameTest
 {
@@ -97,7 +98,7 @@ namespace PracticeOpenGL.Source.Workspace.GLGameTest
 
             public override void Dispose()
             {
-                Debug.WriteLine("Dispose");
+                DebugLogViewer.WriteLine("Dispose");
 
                 //GL.DeleteBuffers(1, ref vertexBuffer);
                 //GL.Oes.DeleteVertexArrays(1, ref vertexArray);
@@ -105,12 +106,12 @@ namespace PracticeOpenGL.Source.Workspace.GLGameTest
 
             public override void Pause()
             {
-                Debug.WriteLine("Pause");
+                DebugLogViewer.WriteLine("Pause");
             }
 
             public override void Resume()
             {
-                Debug.WriteLine("Resume");
+                DebugLogViewer.WriteLine("Resume");
 
                 GL.ClearColor(0.7f, 0.83f, 0.86f, 1f);
 
@@ -142,7 +143,13 @@ namespace PracticeOpenGL.Source.Workspace.GLGameTest
             public override void Update(float deltaTime)
             {
                 m_AnimationSample.Update(deltaTime);
+
+                if (counter++ % 10 == 0)
+                {
+                    DebugLogViewer.WriteLine("Update : " + deltaTime);
+                }
             }
+            int counter = 0;
 
             public override void Present(float deltaTime)
             {
