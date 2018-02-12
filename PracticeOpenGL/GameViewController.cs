@@ -1,12 +1,13 @@
-﻿using System.Diagnostics;
-
+﻿using System;
+using System.Diagnostics;
+using CoreGraphics;
 using Foundation;
 using GLKit;
 using OpenGLES;
-using OpenTK.Graphics.ES20;
 using PracticeOpenGL.Source.Framework;
-using PracticeOpenGL.Source.Workspace;
+using PracticeOpenGL.Source.Framework.Implement.Debugs;
 using PracticeOpenGL.Source.Workspace.GLGameTest;
+using UIKit;
 
 namespace PracticeOpenGL
 {
@@ -93,12 +94,25 @@ namespace PracticeOpenGL
 
         EAGLContext context { get; set; }
 
+        GLGame m_Activity;
+
+#if DEBUG
+        /** 表示領域に対するデバッグログビューアーの幅の割合 */
+        float DEBUG_LOG_VIEWER_WIDTH_RATIO = (2.0f / 3.0f);
+        /** 表示領域に対するデバッグログビューアーの高さの割合 */
+        float DEBUG_LOG_VIEWER_HEIGHT_RATIO = (1.0f / 2.0f);
+        /** デバッグログビューアーの行数 */
+        int DEBUG_LOG_VIEWER_MAX_TEXT_COUNT = 40;
+        /** デバッグログビューアーの背景色 */
+        UIColor DEBUG_LOG_VIEWER_BACKGROUND_COLOR = new UIColor(0.5f, 0.5f, 0.5f, 0.5f);
+#endif
+
+        public GameViewController() { }
+
         [Export("initWithCoder:")]
         public GameViewController(NSCoder coder) : base(coder)
         {
         }
-
-        private GLGame m_Activity;
 
         public override void ViewDidLoad()
         {
@@ -120,6 +134,17 @@ namespace PracticeOpenGL
             // フレームバッファがバインドされていないので、
             // フレームバッファ関連のOpenGL関数を使うにはこの方法で事前にバインドしておく
             view.BindDrawable();
+
+#if DEBUG
+            // デバッグログビューアーの作成
+            var debugLogViewer = DebugLogViewer.CreateView(
+                0, 0,
+                (float)(view.Bounds.Width * DEBUG_LOG_VIEWER_WIDTH_RATIO), (float)(view.Bounds.Height * DEBUG_LOG_VIEWER_HEIGHT_RATIO),
+                DEBUG_LOG_VIEWER_MAX_TEXT_COUNT,
+                DEBUG_LOG_VIEWER_BACKGROUND_COLOR,
+                UITextAlignment.Left);
+            view.AddSubview(debugLogViewer);
+#endif
 
             SetupGL();
 
@@ -205,8 +230,11 @@ namespace PracticeOpenGL
             //}
 
             // 終了させる
-            m_Activity.IsFinishing = true;
-            m_Activity.OnPause();
+            if (m_Activity != null)
+            {
+                m_Activity.IsFinishing = true;
+                m_Activity.OnPause();
+            }
         }
 
         #region GLKViewController methods
