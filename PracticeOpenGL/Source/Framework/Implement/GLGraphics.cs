@@ -1,5 +1,4 @@
-﻿using System;
-using GLKit;
+﻿using GLKit;
 
 namespace PracticeOpenGL.Source.Framework
 {

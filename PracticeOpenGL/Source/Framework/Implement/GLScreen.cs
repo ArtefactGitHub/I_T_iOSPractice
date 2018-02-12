@@ -42,11 +42,6 @@ namespace PracticeOpenGL.Source.Framework
             }
         }
 
-        //protected virtual void SetupGL()
-        //{
-        //    LoadShaders();
-        //}
-
         #region Shader
 
         int[] uniforms = new int[(int)Uniform.Count];
