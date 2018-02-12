@@ -47,8 +47,8 @@ namespace PracticeOpenGL.Source.Framework.Implement
             // 平行投影
             m_ViewProjectionMatrix = Matrix4.Identity;
             Matrix4.CreateOrthographicOffCenter(
-                0f, m_GLGraphics.GetWidth(),
-                m_GLGraphics.GetHeight(), 0f,
+                0f, FrustrumWidth,
+                FrustrumHeight, 0f,
                 0f, 1f,
                 out m_ViewProjectionMatrix);
 #endif
