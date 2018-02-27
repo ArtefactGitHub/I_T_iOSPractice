@@ -14,6 +14,6 @@ namespace PracticeOpenGL.Source.Framework.Interface
 
         void Clear();
 
-        void WriteLine(string text);
+        void WriteLine(object obj);
     }
 }

@@ -10,6 +10,8 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
     {
         static DebugLogViewerImpl m_Impl = new DebugLogViewerImpl();
 
+#if DEBUG
+
         public static UIView CreateView(
             float x, float y,
             float width, float height,
@@ -30,7 +32,7 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
             m_Impl.Clear();
         }
 
-        public static void WriteLine(string text)
+        public static void WriteLine(object text)
         {
             m_Impl.WriteLine(text);
         }
@@ -46,7 +48,7 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
         {
             UITextView m_View;
 
-            List<string> m_Texts = new List<string>();
+            List<object> m_Texts = new List<object>();
 
             int m_MaxTextCount = 10;
 
@@ -74,6 +76,8 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
                     BackgroundColor = backGroundColor,
                     TextAlignment = align,
 
+                    UserInteractionEnabled = false,
+
                     // 編集不可にする
                     Editable = false
                 };
@@ -82,7 +86,7 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
                 return m_View;
             }
 
-            public void WriteLine(string text)
+            public void WriteLine(object text)
             {
                 if (text == null)
                 {
@@ -110,5 +114,31 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
         }
 
         #endregion
+
+#else
+
+        public static UIView CreateView(
+            float x, float y,
+            float width, float height,
+            int maxTextCount,
+            UIColor backGroundColor,
+            UITextAlignment align)
+        {
+            return null;
+        }
+
+        public static void Clear()
+        {
+        }
+
+        public static void WriteLine(object text)
+        {
+        }
+
+        public static void SetVisible(bool isVisible)
+        {
+        }
+
+#endif
     }
 }
