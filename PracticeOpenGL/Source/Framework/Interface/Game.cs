@@ -1,10 +1,12 @@
-﻿namespace PracticeOpenGL.Source.Framework
+﻿using PracticeOpenGL.Source.Framework.Interface;
+
+namespace PracticeOpenGL.Source.Framework
 {
     public interface IGame
     {
-        //Input GetInput();
-
         GLGraphics GetGLGraphics();
+
+        IInput GetInput();
 
         void SetScreen(Screen screen);
 

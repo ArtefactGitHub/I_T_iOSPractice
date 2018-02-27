@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.ES20;
+using PracticeOpenGL.Source.Framework.Implement.Debugs;
 
 namespace PracticeOpenGL.Source.Framework.Implement
 {
@@ -25,6 +26,7 @@ namespace PracticeOpenGL.Source.Framework.Implement
             this.FrustrumWidth = frustrumWidth;
             this.FrustrumHeight = frustrumHeight;
             this.Position = new Vector2(frustrumWidth / 2.0f, frustrumHeight / 2.0f);
+            this.Position = Vector2.Zero;
             this.Zoom = 1.0f;
 
             m_ViewProjectionMatrix = Matrix4.Identity;
@@ -44,27 +46,53 @@ namespace PracticeOpenGL.Source.Framework.Implement
             Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)System.Math.PI / 4.0f, (float)m_GLGraphics.GetWidth() / (float)m_GLGraphics.GetHeight(), 0.1f, 100.0f);
             Matrix4 viewProjectionMatrix = viewMatrix * projectionMatrix;
 #else
+            var x = Position.X + (FrustrumWidth * (1.0f - Zoom) / 2.0f);
+            var width = (Position.X + FrustrumWidth) - (FrustrumWidth * (1.0f - Zoom) / 2.0f);
+            var y = Position.Y + (FrustrumHeight * (1.0f - Zoom) / 2.0f);
+            var height = (Position.Y + FrustrumHeight) - (FrustrumHeight * (1.0f - Zoom) / 2.0f);
+
             // 平行投影
             m_ViewProjectionMatrix = Matrix4.Identity;
             Matrix4.CreateOrthographicOffCenter(
-                0f, FrustrumWidth,
-                FrustrumHeight, 0f,
+                //0f, FrustrumWidth,
+                //FrustrumHeight, 0f,
+                x, width,
+                height, y,
                 0f, 1f,
                 out m_ViewProjectionMatrix);
 #endif
         }
 
-        public void SetViewport()
+        public void SetZoom(float value)
         {
-            GL.Viewport(0, 0, m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight());
+            if (value > 0f && value <= 1.0f)
+            {
+                this.Zoom = value;
+            }
         }
 
-        public void TouchToWorld(Vector2 touch)
+        public void SetViewport()
         {
-            touch.X = (touch.X / (float)m_GLGraphics.GetWidth()) * FrustrumWidth * Zoom;
-            touch.Y = (1 - touch.Y / (float)m_GLGraphics.GetHeight()) * FrustrumHeight * Zoom;
-            touch = Vector2.Add(Position, touch);
-            touch = Vector2.Subtract(touch, new Vector2(FrustrumWidth * Zoom / 2.0f, FrustrumHeight * Zoom / 2.0f));
+            //GL.Viewport(0, 0, m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight());
+            GL.Viewport(0, 0, m_GLGraphics.GetDrawableWidth(), m_GLGraphics.GetDrawableHeight());
+        }
+
+        public void TouchToWorld(ref Vector2 touch)
+        {
+            var scWidth = (float)m_GLGraphics.GetWidth();
+            var scHeight = (float)m_GLGraphics.GetHeight();
+
+            // 起点を算出
+            var x = Position.X + (FrustrumWidth * (1.0f - Zoom) / 2.0f);
+            var y = Position.Y + (FrustrumHeight * (1.0f - Zoom) / 2.0f);
+            // スクリーンの座標の割合に、ズーム時の幅・高さを乗算して、投影する座標を算出
+            x += (touch.X / scWidth * (FrustrumWidth * Zoom));
+            y += (touch.Y / scHeight * (FrustrumHeight * Zoom));
+
+            touch.X = x;
+            touch.Y = y;
+
+            //DebugLogViewer.WriteLine(string.Format(">>> touch ({0:0.0}, {1:0.0})", touch.X, touch.Y));
         }
     }
 }

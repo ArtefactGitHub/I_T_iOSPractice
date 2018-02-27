@@ -1,9 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using CoreGraphics;
 using Foundation;
 using GLKit;
 using OpenGLES;
 using PracticeOpenGL.Source.Framework;
+using PracticeOpenGL.Source.Framework.Implement;
 using PracticeOpenGL.Source.Framework.Implement.Debugs;
+using PracticeOpenGL.Source.Framework.Implement.Input;
+using PracticeOpenGL.Source.Framework.Interface;
 using PracticeOpenGL.Source.Workspace.GLGameTest;
 using UIKit;
 
@@ -64,13 +69,105 @@ namespace PracticeOpenGL
                 DEBUG_LOG_VIEWER_BACKGROUND_COLOR,
                 UITextAlignment.Left);
             view.AddSubview(debugLogViewer);
+
+            DebugLogViewer.WriteLine(string.Format("View.Drawable ({0}, {1})", view.DrawableWidth, view.DrawableHeight));
+            DebugLogViewer.WriteLine(string.Format("view.Bounds {0}", view.Bounds));
 #endif
 
             SetupGL();
 
             m_Activity = new GLGameTest();
             m_Activity.OnSurfaceCreated(view);
+
+            RegisterTouchEvent(m_Activity);
         }
+
+        TouchHandler m_TouchHandler;
+#if false
+
+        protected void RegisterTouchEvent()
+        {
+            m_TouchHandler = new TouchHandler();
+            IOSInput.Instance.Initialize(m_TouchHandler);
+
+            View.AddGestureRecognizer(new UITapGestureRecognizer((UITapGestureRecognizer obj) =>
+            {
+                CGPoint p = obj.LocationInView(View);
+                m_TouchHandler.OnTouchEvent((float)p.X, (float)p.Y);
+            })
+            {
+                //NumberOfTapsRequired = 2
+            });
+        }
+#else
+
+        protected void RegisterTouchEvent(GLGame game)
+        {
+            m_TouchHandler = new TouchHandler(1.0f, 1.0f);
+            //IOSInput.Instance.Initialize(m_TouchHandler);
+            IOSInput input = (IOSInput)game.GetInput();
+            input.Initialize(m_TouchHandler);
+
+            // マルチタッチを有効にする
+            View.MultipleTouchEnabled = true;
+        }
+
+        public override void TouchesBegan(NSSet touches, UIEvent evt)
+        {
+            base.TouchesBegan(touches, evt);
+            DebugLogViewer.WriteLine(string.Format("TouchesBegan"));
+
+            foreach (UITouch touch in touches.ToArray<UITouch>())
+            //foreach (UITouch touch in evt.AllTouches.ToArray<UITouch>())
+            {
+                SendHandlerOnTouchEvent(touch, View, MotionEvent.ACTION_DOWN);
+            }
+        }
+
+        public override void TouchesMoved(NSSet touches, UIEvent evt)
+        {
+            base.TouchesMoved(touches, evt);
+            DebugLogViewer.WriteLine(string.Format("TouchesMoved"));
+
+            foreach (UITouch touch in touches.ToArray<UITouch>())
+            //foreach (UITouch touch in evt.AllTouches.ToArray<UITouch>())
+            {
+                SendHandlerOnTouchEvent(touch, View, MotionEvent.ACTION_MOVE);
+            }
+        }
+
+        public override void TouchesCancelled(NSSet touches, UIEvent evt)
+        {
+            base.TouchesCancelled(touches, evt);
+            DebugLogViewer.WriteLine(string.Format("TouchesCancelled"));
+
+            foreach (UITouch touch in touches.ToArray<UITouch>())
+            //foreach (UITouch touch in evt.AllTouches.ToArray<UITouch>())
+            {
+                SendHandlerOnTouchEvent(touch, View, MotionEvent.ACTION_CANCEL);
+            }
+        }
+
+        public override void TouchesEnded(NSSet touches, UIEvent evt)
+        {
+            base.TouchesEnded(touches, evt);
+            DebugLogViewer.WriteLine(string.Format("TouchesEnded"));
+
+            foreach (UITouch touch in touches.ToArray<UITouch>())
+            //foreach (UITouch touch in evt.AllTouches.ToArray<UITouch>())
+            {
+                SendHandlerOnTouchEvent(touch, View, MotionEvent.ACTION_NONE);
+            }
+        }
+
+        void SendHandlerOnTouchEvent(UITouch touch, UIView view, MotionEvent motion)
+        {
+            CGPoint point = touch.LocationInView(view);
+            DebugLogViewer.WriteLine(string.Format("  Id[{0}] / Pos[{1}] / Motion[{2}]", touch.Handle, point, motion));
+            m_TouchHandler.OnTouchEvent(touch.Handle, (float)point.X, (float)point.Y, motion);
+        }
+
+#endif
 
         protected override void Dispose(bool disposing)
         {

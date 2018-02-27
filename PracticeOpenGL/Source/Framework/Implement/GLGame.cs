@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Threading;
 using GLKit;
+using PracticeOpenGL.Source.Framework.Implement;
+using PracticeOpenGL.Source.Framework.Interface;
 
 namespace PracticeOpenGL.Source.Framework
 {
@@ -29,6 +31,8 @@ namespace PracticeOpenGL.Source.Framework
 
         protected GLGraphics m_GLGraphics;
 
+        protected IOSInput m_Input;
+
         protected Screen m_Screen;
 
         protected GLGameState m_State = GLGameState.Initialized;
@@ -47,6 +51,8 @@ namespace PracticeOpenGL.Source.Framework
         {
             m_GLGraphics = new GLGraphics(glkView);
             Debug.WriteLine(string.Format("Width:{0} / Height:{1}", m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight()));
+
+            m_Input = new IOSInput();
 
             lock (m_StateChanged)
             {
@@ -134,7 +140,8 @@ namespace PracticeOpenGL.Source.Framework
         }
 
         public GLGraphics GetGLGraphics() { return m_GLGraphics; }
-        //public Input GetInput() { return null; }
+
+        public IInput GetInput() { return m_Input; }
 
         public abstract Screen GetStartScreen();
 
