@@ -12,15 +12,17 @@ namespace PracticeOpenGL.Source.Framework.Implement
     {
         #region property
 
+        public int TextureId { get { return m_TextureId; } }
+
         public int Width { get; private set; }
 
         public int Height { get; private set; }
 
+        int m_TextureId = 0;
+
         GLGraphics m_GLGraphics;
 
         string m_FileName = string.Empty;
-
-        int m_TextureId = 0;
 
         #endregion
 
@@ -34,7 +36,7 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
         public void Bind()
         {
-            GL.BindTexture(TextureTarget.Texture2D, m_TextureId);
+            GL.BindTexture(TextureTarget.Texture2D, TextureId);
         }
 
         public void UnBind()
@@ -44,10 +46,10 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
         public void Dispose()
         {
-            if (m_TextureId != 0)
+            if (TextureId != 0)
             {
                 Bind();
-                GL.DeleteTexture(m_TextureId);
+                GL.DeleteTexture(TextureId);
             }
         }
 
@@ -121,7 +123,7 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
         void GenAndBindTexture()
         {
-            if (m_TextureId == 0)
+            if (TextureId == 0)
             {
                 GL.GenTextures(1, out m_TextureId);
                 Bind();

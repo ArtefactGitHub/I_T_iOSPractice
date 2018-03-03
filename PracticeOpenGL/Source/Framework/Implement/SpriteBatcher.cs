@@ -65,10 +65,10 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
         public void EndBatch()
         {
-            m_Vertices.SetTextureCoordinates(m_TextureCoordinates);
-            m_Vertices.SetVertices(m_VerticesVec);
+            m_Vertices.SetTextureCoordinates(m_TextureCoordinates, m_BufferIndex);
+            m_Vertices.SetVertices(m_VerticesVec, m_BufferIndex);
             m_Vertices.Bind();
-            m_Vertices.Draw();
+            m_Vertices.Draw(m_NumSprites * 6);
             m_Vertices.UnBind();
         }
 

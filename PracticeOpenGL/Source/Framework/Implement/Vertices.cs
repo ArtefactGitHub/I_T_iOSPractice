@@ -28,6 +28,15 @@ namespace PracticeOpenGL.Source.Framework.Implement
             this.m_Vertices = vertices;
         }
 
+        public void SetVertices(Vector3[] vertices, int length)
+        {
+            this.m_Vertices = new Vector3[length];
+            for (int i = 0; i < length; i++)
+            {
+                this.m_Vertices[i] = vertices[i];
+            }
+        }
+
         public void SetIndecies(ushort[] indecies)
         {
             this.m_Indecies = indecies;
@@ -36,6 +45,15 @@ namespace PracticeOpenGL.Source.Framework.Implement
         public void SetTextureCoordinates(TextureCoord[] textureCoordinates)
         {
             this.m_TextureCoordinates = textureCoordinates;
+        }
+
+        public void SetTextureCoordinates(TextureCoord[] textureCoordinates, int length)
+        {
+            this.m_TextureCoordinates = new TextureCoord[length];
+            for (int i = 0; i < length; i++)
+            {
+                this.m_TextureCoordinates[i] = textureCoordinates[i];
+            }
         }
 
         public void Bind()
@@ -70,6 +88,11 @@ namespace PracticeOpenGL.Source.Framework.Implement
         public void Draw()
         {
             GL.DrawElements(BeginMode.Triangles, m_Indecies.Length, DrawElementsType.UnsignedShort, m_Indecies);
+        }
+
+        public void Draw(int count)
+        {
+            GL.DrawElements(BeginMode.Triangles, count, DrawElementsType.UnsignedShort, m_Indecies);
         }
     }
 }
