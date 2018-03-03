@@ -39,9 +39,26 @@ namespace PracticeOpenGL
         {
         }
 
+        public override void LoadView()
+        {
+            base.LoadView();
+
+#if DEBUG
+            var view = View;
+            // デバッグログビューアーの作成
+            var debugLogViewer = DebugLogViewer.CreateView(
+                0, 0,
+                (float)(view.Bounds.Width * DEBUG_LOG_VIEWER_WIDTH_RATIO), (float)(view.Bounds.Height * DEBUG_LOG_VIEWER_HEIGHT_RATIO),
+                DEBUG_LOG_VIEWER_MAX_TEXT_COUNT,
+                DEBUG_LOG_VIEWER_BACKGROUND_COLOR,
+                UITextAlignment.Left);
+            view.AddSubview(debugLogViewer);
+#endif
+        }
+
         public override void ViewDidLoad()
         {
-            Debug.WriteLine("ViewDidLoad()");
+            DebugLogViewer.WriteLine("ViewDidLoad()");
 
             base.ViewDidLoad();
 
@@ -49,7 +66,7 @@ namespace PracticeOpenGL
 
             if (m_Context == null)
             {
-                Debug.WriteLine("Failed to create ES context");
+                DebugLogViewer.WriteLine("Failed to create ES context");
             }
 
             var view = (GLKView)View;
@@ -60,19 +77,8 @@ namespace PracticeOpenGL
             // フレームバッファ関連のOpenGL関数を使うにはこの方法で事前にバインドしておく
             view.BindDrawable();
 
-#if DEBUG
-            // デバッグログビューアーの作成
-            var debugLogViewer = DebugLogViewer.CreateView(
-                0, 0,
-                (float)(view.Bounds.Width * DEBUG_LOG_VIEWER_WIDTH_RATIO), (float)(view.Bounds.Height * DEBUG_LOG_VIEWER_HEIGHT_RATIO),
-                DEBUG_LOG_VIEWER_MAX_TEXT_COUNT,
-                DEBUG_LOG_VIEWER_BACKGROUND_COLOR,
-                UITextAlignment.Left);
-            view.AddSubview(debugLogViewer);
-
             DebugLogViewer.WriteLine(string.Format("View.Drawable ({0}, {1})", view.DrawableWidth, view.DrawableHeight));
             DebugLogViewer.WriteLine(string.Format("view.Bounds {0}", view.Bounds));
-#endif
 
             SetupGL();
 
@@ -81,6 +87,8 @@ namespace PracticeOpenGL
 
             RegisterTouchEvent(m_Activity);
         }
+
+        #region RegisterEvent
 
         TouchHandler m_TouchHandler;
 #if false
@@ -169,9 +177,11 @@ namespace PracticeOpenGL
 
 #endif
 
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
-            Debug.WriteLine("Dispose() : " + disposing);
+            DebugLogViewer.WriteLine("Dispose() : " + disposing);
 
             base.Dispose(disposing);
 
