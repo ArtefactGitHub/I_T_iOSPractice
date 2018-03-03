@@ -96,6 +96,7 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
                 // コンソールへ出力する
                 Debug.WriteLine(text);
 
+#if true
                 // 最大要素数以上の場合、最後の要素を削除する
                 if (m_Texts.Count >= m_MaxTextCount)
                 {
@@ -105,6 +106,20 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
                 // 先頭に追加する
                 m_Texts.Insert(0, text);
                 m_View.Text = string.Join("\n", m_Texts);
+#else
+                // 上から下へテキストを追加していく方法
+                // テキストが見切れてしまうので、アンカーを下に持っていくなど対応が必要
+
+                // 最大要素数以上の場合、要素を削除する
+                if (m_Texts.Count >= m_MaxTextCount)
+                {
+                    m_Texts.RemoveAt(0);
+                }
+
+                // 追加する
+                m_Texts.Add(text);
+                m_View.Text = string.Join("\n", m_Texts);
+#endif
             }
 
             public void SetVisible(bool isVisible)
@@ -117,7 +132,7 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
 
 #else
 
-        public static UIView CreateView(
+        public UIView CreateView(
             float x, float y,
             float width, float height,
             int maxTextCount,
