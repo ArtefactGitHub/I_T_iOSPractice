@@ -99,6 +99,8 @@
     <Folder Include="Source\Workspace\GLGameTest\" />
     <Folder Include="Source\Framework\Implement\Input\" />
     <Folder Include="Source\Framework\Implement\Debugs\" />
+    <Folder Include="Source\Framework\Implement\Utility\" />
+    <Folder Include="Source\Workspace\GLGameTest\Screen\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -135,6 +137,9 @@
     <Compile Include="Source\Framework\Implement\Pool.cs" />
     <Compile Include="Source\Framework\Interface\IDebugLogViewer.cs" />
     <Compile Include="Source\Framework\Implement\Debugs\DebugLogViewer.cs" />
+    <Compile Include="Source\Framework\Implement\Utility\DetectChecker.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\Screen\Draw2DTestScreen.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\Screen\TouchTestScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Shader.fsh" />
@@ -143,6 +148,7 @@
     <BundleResource Include="Resources\Images\TestIconNotAlpha.png" />
     <BundleResource Include="Resources\Images\TestIconAtlas.png" />
     <BundleResource Include="Resources\Images\AnimationSample.png" />
+    <BundleResource Include="Resources\Images\ui_sample.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
