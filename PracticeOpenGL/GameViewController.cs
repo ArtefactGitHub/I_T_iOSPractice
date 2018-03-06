@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using CoreGraphics;
 using Foundation;
 using GLKit;
@@ -8,7 +7,7 @@ using PracticeOpenGL.Source.Framework;
 using PracticeOpenGL.Source.Framework.Implement;
 using PracticeOpenGL.Source.Framework.Implement.Debugs;
 using PracticeOpenGL.Source.Framework.Implement.Input;
-using PracticeOpenGL.Source.Framework.Interface;
+using PracticeOpenGL.Source.Framework.Implement.Settings;
 using PracticeOpenGL.Source.Workspace.GLGameTest;
 using UIKit;
 
@@ -37,6 +36,8 @@ namespace PracticeOpenGL
         [Export("initWithCoder:")]
         public GameViewController(NSCoder coder) : base(coder)
         {
+            // iOS11以上は SafeArea を考慮する必要がある
+            Setting.CanUseSafeArea = UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
         }
 
         public override void LoadView()
@@ -44,8 +45,8 @@ namespace PracticeOpenGL
             base.LoadView();
 
 #if DEBUG
-            var view = View;
             // デバッグログビューアーの作成
+            var view = View;
             var debugLogViewer = DebugLogViewer.CreateView(
                 0, 0,
                 (float)(view.Bounds.Width * DEBUG_LOG_VIEWER_WIDTH_RATIO), (float)(view.Bounds.Height * DEBUG_LOG_VIEWER_HEIGHT_RATIO),
@@ -56,11 +57,25 @@ namespace PracticeOpenGL
 #endif
         }
 
+#if false
         public override void ViewDidLoad()
         {
             DebugLogViewer.WriteLine("ViewDidLoad()");
 
             base.ViewDidLoad();
+#else
+        /// <summary>
+        /// Subview のレイアウト時のコールバック
+        /// 
+        /// SafeArea 周りのパラメータがこのタイミングで取得出来るようになるので
+        /// ViewDidLoad() で行なっていた処理を移動
+        /// </summary>
+        public override void ViewWillLayoutSubviews()
+        {
+            DebugLogViewer.WriteLine("ViewWillLayoutSubviews()");
+
+            base.ViewWillLayoutSubviews();
+#endif
 
             m_Context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
 

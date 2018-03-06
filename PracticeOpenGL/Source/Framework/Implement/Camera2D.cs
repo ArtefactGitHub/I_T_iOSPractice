@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using CoreGraphics;
+using OpenTK;
 using OpenTK.Graphics.ES20;
 using PracticeOpenGL.Source.Framework.Implement.Debugs;
 
@@ -73,21 +74,32 @@ namespace PracticeOpenGL.Source.Framework.Implement
 
         public void SetViewport()
         {
-            //GL.Viewport(0, 0, m_GLGraphics.GetWidth(), m_GLGraphics.GetHeight());
+#if false
             GL.Viewport(0, 0, m_GLGraphics.GetDrawableWidth(), m_GLGraphics.GetDrawableHeight());
+#else
+            // SafeArea を考慮した描画範囲をビューポートに指定
+            CGRect rect = m_GLGraphics.GetDrawableAreaRect();
+            float scaleFactor = m_GLGraphics.GetScaleFactor();
+            GL.Viewport(
+                (int)(rect.X * scaleFactor),
+                (int)(rect.Y * scaleFactor),
+                (int)(rect.Width * scaleFactor),
+                (int)(rect.Height * scaleFactor)
+            );
+#endif
         }
 
         public void TouchToWorld(ref Vector2 touch)
         {
-            var scWidth = (float)m_GLGraphics.GetWidth();
-            var scHeight = (float)m_GLGraphics.GetHeight();
+            var screenWidth = (float)m_GLGraphics.GetWidth();
+            var screenHeight = (float)m_GLGraphics.GetHeight();
 
             // 起点を算出
             var x = Position.X + (FrustrumWidth * (1.0f - Zoom) / 2.0f);
             var y = Position.Y + (FrustrumHeight * (1.0f - Zoom) / 2.0f);
             // スクリーンの座標の割合に、ズーム時の幅・高さを乗算して、投影する座標を算出
-            x += (touch.X / scWidth * (FrustrumWidth * Zoom));
-            y += (touch.Y / scHeight * (FrustrumHeight * Zoom));
+            x += (touch.X / screenWidth * (FrustrumWidth * Zoom));
+            y += (touch.Y / screenHeight * (FrustrumHeight * Zoom));
 
             touch.X = x;
             touch.Y = y;
