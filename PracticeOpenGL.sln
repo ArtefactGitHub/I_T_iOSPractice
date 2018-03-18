@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeOpenGL", "PracticeOpenGL\PracticeOpenGL.csproj", "{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeOpenGL_iOS", "PracticeOpenGL\PracticeOpenGL_iOS.csproj", "{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
