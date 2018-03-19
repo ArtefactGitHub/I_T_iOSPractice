@@ -644,4 +644,10 @@ __pycache__/
 #*.csproj
 #*.sln
 
+# ===============
+# rubygems
+vendor/*
+
+
+
 # End of https://www.gitignore.io/api/macos,xcode,swift,windows,android,jetbrains,visualstudio,xamarinstudio,androidstudio,visualstudiocode
