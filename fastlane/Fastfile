@@ -1,0 +1,145 @@
+# Customise this file, documentation can be found here:
+# https://github.com/KrauseFx/fastlane/tree/master/docs
+# vi: ft=ruby
+
+fastlane_version "2.85.0"
+default_platform :ios
+
+platform :ios do 
+  # =====================
+  #  
+  # =====================
+  before_all do
+    say ["before all"]
+  end
+
+  desc 'Sets the target application version or displays the current one'
+  lane :version do |options|
+    # 内部でエラーになるので機能を閉じます。
+    # dynamically getting the path results in the error `You passed invalid parameters to 'get_info_plist_value'.`
+
+    # options[:plist_path] = "./PracticeOpenGL/Info.plist"
+    # app_version(options)
+
+  end
+
+  desc 'Deploys the app to testflight'
+  lane :beta do |options|
+    options[:changelog] ||= '../CHANGELOG.md'
+
+    provision(
+      type: 'appstore'
+    )
+
+    #build(
+        #build_configuration: 'Distribution',
+    mybuild(
+        build_configuration: 'Dev_Debug',
+        build_platform: 'iPhone'
+    )
+
+    # username:"artefactapple@gmail.com"
+    # Password (for artefactapple@gmail.com):
+    # -------------------------------------------------------------------------------------
+    # Please provide your Apple Developer Program account credentials
+    # The login information you enter will be stored in your macOS Keychain
+    # You can also pass the password using the `FASTLANE_PASSWORD` environment variable
+    # See more information about it on GitHub: https://github.com/fastlane/fastlane/tree/master/credentials_manager
+    -------------------------------------------------------------------------------------
+
+    pilot(
+      skip_waiting_for_build_processing: true,
+      changelog: File.read(options[:changelog]), # read changelog
+    )
+  end
+
+  desc 'Deploys the app to the appstore'
+  lane :store do |options|
+    provision(
+      type: 'appstore'
+    )
+
+    build(
+      build_configuration: 'Distribution', 
+      build_platform: 'iPhone'
+    )
+
+    deliver
+  end
+
+# >> ============================
+    lane :Dev_Debug do
+        provision(type: 'development')
+
+        mybuild(build_configuration: "Dev_Debug")
+    end
+
+    lane :AdHoc_Debug do
+        provision(type: 'adhoc')
+
+        mybuild(build_configuration: "AdHoc_Debug")
+    end
+
+    lane :Enterprise_Debug do
+        provision(type: 'enterprise')
+
+        mybuild(build_configuration: "Enterprise_Debug")
+    end
+
+    lane :AppStore do
+        provision(type: 'appstore')
+
+        mybuild(build_configuration: "AppStore")
+    end
+
+    lane :release_branch do |options|
+        # 引数に release version が指定されていることを確認する
+        UI.user error!("Required release version. ex: fastlane release_branch version:1.0.0") unless options[:version]
+        branch = "release/#{options[:version]}"
+
+        # say "#{branch}"
+    end
+
+    desc 'Compiles the project'
+    lane :mybuild do |options|
+        options[:platform] = "ios"
+        options[:plist_path] = "./PracticeOpenGL/Info.plist"
+        options[:solution_path] = "./PracticeOpenGL.sln"
+        options[:build_target] ||= []
+        options[:build_target] << 'Build'
+
+        # this basically invokes the core souyuz build engine
+        souyuz(options)
+    end
+
+# << ============================
+
+  desc 'Compiles the project'
+  lane :build do |options|
+    options[:build_target] ||= []
+    options[:build_target] << 'Build'
+
+    # this basically invokes the core souyuz build engine
+    souyuz(options)
+  end
+
+  desc 'Install provisioning profiles using match'
+  lane :provision do |options|
+    if Helper.is_ci?
+      # CI should not do stuff in ADP
+      options[:readonly] = true
+    end
+
+    # update provisioning profiles
+    match(options)
+  end
+
+
+  after_all do |lane|
+    say ["after all"]
+  end
+
+  error do |lane, exception|
+    say ["エラー"]
+  end
+end
