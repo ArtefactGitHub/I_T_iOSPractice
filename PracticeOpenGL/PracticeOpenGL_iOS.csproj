@@ -149,6 +149,57 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Enterprise_Debug</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>33166</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunWithWarnings>true</RunWithWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Enterprise_Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore_Release|iPhone' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\AppStore_Release</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <ErrorReport>prompt</ErrorReport>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <PlatformTarget>x86</PlatformTarget>
+    <MtouchVerbosity>2</MtouchVerbosity>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -159,6 +210,31 @@
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\LaunchImage.launchimage\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_172_172.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_1024_1024.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_512_512.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_256_256.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_128_128.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_64_64.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_32_32.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_16_16.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_196_196.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_88_88.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_80_80.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_87_87.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_58_58.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_55_55.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_44_44.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_76_76.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_152_152.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_167_167.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_29_29.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_40_40.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_20_20.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_120_120.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_180_180.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_60_60.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
