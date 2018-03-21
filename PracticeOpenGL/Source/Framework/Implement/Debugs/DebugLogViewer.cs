@@ -8,9 +8,8 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
 {
     public static class DebugLogViewer
     {
-        static DebugLogViewerImpl m_Impl = new DebugLogViewerImpl();
-
 #if DEBUG
+        static DebugLogViewerImpl m_Impl = new DebugLogViewerImpl();
 
         public static UIView CreateView(
             float x, float y,
@@ -132,12 +131,12 @@ namespace PracticeOpenGL.Source.Framework.Implement.Debugs
 
 #else
 
-        public UIView CreateView(
-            float x, float y,
-            float width, float height,
-            int maxTextCount,
-            UIColor backGroundColor,
-            UITextAlignment align)
+        public static UIView CreateView(
+                    float x, float y,
+                    float width, float height,
+                    int maxTextCount,
+                    UIColor backGroundColor,
+                    UITextAlignment align)
         {
             return null;
         }
