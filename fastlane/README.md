@@ -21,6 +21,11 @@ or alternatively using `brew cask install fastlane`
 fastlane ios version
 ```
 Sets the target application version or displays the current one
+### ios provision
+```
+fastlane ios provision
+```
+Install provisioning profiles using match
 ### ios beta
 ```
 fastlane ios beta
@@ -31,46 +36,11 @@ Deploys the app to testflight
 fastlane ios store
 ```
 Deploys the app to the appstore
-### ios Dev_Debug
-```
-fastlane ios Dev_Debug
-```
-
-### ios AdHoc_Debug
-```
-fastlane ios AdHoc_Debug
-```
-
-### ios Enterprise_Debug
-```
-fastlane ios Enterprise_Debug
-```
-
-### ios AppStore
-```
-fastlane ios AppStore
-```
-
 ### ios release_branch
 ```
 fastlane ios release_branch
 ```
 
-### ios mybuild
-```
-fastlane ios mybuild
-```
-Compiles the project
-### ios build
-```
-fastlane ios build
-```
-Compiles the project
-### ios provision
-```
-fastlane ios provision
-```
-Install provisioning profiles using match
 
 ----
 
