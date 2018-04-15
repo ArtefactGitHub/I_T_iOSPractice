@@ -26,9 +26,29 @@ Sets the target application version or displays the current one
 fastlane ios provision
 ```
 Install provisioning profiles using match
-### ios beta
+### ios BuildIPA
 ```
-fastlane ios beta
+fastlane ios BuildIPA
+```
+
+### ios CleanAll
+```
+fastlane ios CleanAll
+```
+
+### ios BuildLib
+```
+fastlane ios BuildLib
+```
+
+### ios devAdHoc
+```
+fastlane ios devAdHoc
+```
+for Development Adhoc
+### ios test
+```
+fastlane ios test
 ```
 Deploys the app to testflight
 ### ios store

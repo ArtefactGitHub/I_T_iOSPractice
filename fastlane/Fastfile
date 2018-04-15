@@ -1,21 +1,9 @@
-# Customise this file, documentation can be found here:
-# https://github.com/KrauseFx/fastlane/tree/master/docs
-# vi: ft=ruby
-
 fastlane_version "2.86.1"
 default_platform :ios
 
-ENV['DELIVER_ITMSTRANSPORTER_ADDITIONAL_UPLOAD_PARAMETERS'] = '-t DAV'
-ENV["SLACK_URL"] = "https://hooks.slack.com/services/XXXXXXXX"
-
-USER_NAME = "artefactapple@gmail.com"
-APP_IDENTIFIER = "com.artefact.PracticeOpenGL"
-PLIST_FILE_PATH = "./PracticeOpenGL/Info.plist"
-SOLUTION_FILE_PATH = "./PracticeOpenGL.sln"
-
 platform :ios do 
   before_all do
-    say ["before all"]
+    #say [""]
   end
 
   desc 'Sets the target application version or displays the current one'
@@ -39,8 +27,80 @@ platform :ios do
     match(options)
   end
 
+  lane :BuildIPA do |options|
+=begin
+    _args = {
+      export_path: "./",
+      export_format: "ipa"
+    }
+
+    xcodebuild(
+      archive: true,
+      archive_path: DERIVED_DATA_PATH
+      scheme: 'CLib',
+      project: "./PracticeOpenGL/Native/CLib/CLib.xcodeproj",
+      configuration: "Debug",
+      #derivedDataPath: DERIVED_DATA_PATH
+      xcargs: _args
+    )
+=end
+
+  end
+
+  lane :CleanAll do |options|
+    puts 'Deleting old build folder'
+    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
+    `rm -rf ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}`
+  end
+
+  lane :BuildLib do |options|
+    # Clean the project
+    _workSpace = "#{ENV['XCODE_PROJECT_PATH']}#{ENV['XCODE_PROJECT_NAME']}/#{ENV['XCODE_WORKSPACE_NAME']}"
+    xcclean(workspace:_workSpace, scheme: "CLib", destination: "generic/platform=iOS")
+
+    clean_build_artifacts
+
+    # 出力用ディレクトリの生成
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}")
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/")
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/")
+    
+    # Debug スキームのビルドし、出力ディレクトリへコピー
+    xcodebuild(
+      configuration: "Debug",
+      destination: "generic/platform=iOS",
+      scheme: 'CLib',
+      archive: false,
+      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/archive/",
+#      derivedDataPath: XCODE_TEMP_PATH,
+      workspace: _workSpace
+    )
+    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Debug-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/libCLib.a")
+    
+    # Release スキームのビルドし、出力ディレクトリへコピー
+    xcodebuild(
+      configuration: "Release",
+      destination: "generic/platform=iOS",
+      scheme: 'CLib',
+      archive: false,
+      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/archive/",
+#      derivedDataPath: XCODE_TEMP_PATH,
+      workspace: _workSpace
+    )
+    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Release-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/libCLib.a")
+
+    # 不要ディレクトリを削除
+    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
+
+  end
+
+  desc 'for Development Adhoc'
+  lane :devAdHoc do |options|
+    AdHoc_Debug()
+  end
+
   desc 'Deploys the app to testflight'
-  lane :beta do |options|
+  lane :test do |options|
     options[:changelog] = "./CHANGELOG.md"
 
     IncrementalBuildNumber(options)
@@ -56,8 +116,8 @@ platform :ios do
         # 用途不明。現時点では指定不要。
         #itc_provider: <ITC PROVIDER>,
 
-        username: USER_NAME,
-        app_identifier: APP_IDENTIFIER,
+        username: ENV['USER_NAME'],
+        app_identifier: ENV['APP_IDENTIFIER'],
         skip_submission: false,
         skip_waiting_for_build_processing: true
     )
@@ -70,8 +130,8 @@ platform :ios do
     AppStore_Release()
 
     deliver(
-        username: USER_NAME,
-        app_identifier: APP_IDENTIFIER,
+        username: ENV['USER_NAME'],
+        app_identifier: ENV['APP_IDENTIFIER'],
         force: true
     )
   end
@@ -94,7 +154,7 @@ platform :ios do
   private_lane :IncrementalBuildNumber do |options|
     #increment_build_number は、Xcode プロジェクトでのみ使用可能なため、代替処理を行う
   
-    _nowBuildVersion = get_info_plist_value(path: PLIST_FILE_PATH, key: "CFBundleVersion")
+    _nowBuildVersion = get_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion")
     UI.message "cuurrent build version is [#{_nowBuildVersion}]."
 
     # ビルドバージョンの指定が無い場合、現在のビルドバージョンをインクリメントする
@@ -108,7 +168,7 @@ platform :ios do
     end
 
     # plist 記載のビルドバージョンを更新する
-    set_info_plist_value(path: PLIST_FILE_PATH, key: "CFBundleVersion", value: _newBuildVersion)
+    set_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion", value: _newBuildVersion)
   end
   
   private_lane :Dev_Debug do
@@ -149,8 +209,8 @@ platform :ios do
   desc 'Compiles the project'
   private_lane :BuildForVisualStudio do |options|
       options[:platform] = "ios"
-      options[:plist_path] = PLIST_FILE_PATH
-      options[:solution_path] = SOLUTION_FILE_PATH
+      options[:plist_path] = ENV['PLIST_FILE_PATH']
+      options[:solution_path] = ENV['SOLUTION_FILE_PATH']
       options[:build_target] ||= []
       #options[:build_target] << 'Build'
       options[:build_target] << 'Rebuild'
@@ -160,17 +220,23 @@ platform :ios do
   end
 
   after_all do |lane|
-    say ["after all"]
+    #say [""]
+    slack(
+      channel: "#general",
+      message: "@channel Successfully deployed new App Update!!"
+    )
   end
 
   error do |lane, exception|
-    say ["エラー"]
-=begin    
+    #say ["エラー"]
+
     slack(
-      message: "Something went wrong with the deployment.",
+      channel: "#general",
+      message: "@channel Something went wrong with the deployment.",
       success: false,
-      payload: { "Error Info" => exception.error_info.to_s } 
+      #payload: { "Error Info" => exception.error_info.to_s } 
+      payload: { "Error Info" => exception.message } 
     )
-=end
+
   end
 end
