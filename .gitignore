@@ -648,6 +648,8 @@ __pycache__/
 # rubygems
 vendor/*
 
-
+# ===============
+# Fastlane
+.env.default
 
 # End of https://www.gitignore.io/api/macos,xcode,swift,windows,android,jetbrains,visualstudio,xamarinstudio,androidstudio,visualstudiocode
