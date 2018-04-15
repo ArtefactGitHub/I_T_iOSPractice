@@ -126,15 +126,16 @@
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
-    <MtouchFastDev>true</MtouchFastDev>
     <MtouchFloat32>true</MtouchFloat32>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <IOSDebuggerPort>33166</IOSDebuggerPort>
-    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchLink>Full</MtouchLink>
     <MtouchArch>ARM64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
     <RunWithWarnings>true</RunWithWarnings>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+    <CodesignProvision>match AdHoc com.artefact.PracticeOpenGL</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AdHoc_Release|iPhone' ">
     <Optimize>true</Optimize>
@@ -148,6 +149,8 @@
     <MtouchArch>ARM64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
+    <CodesignProvision>match AdHoc com.artefact.PracticeOpenGL</CodesignProvision>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/DerivedData/CLib/Build/Products/Release-iphoneos -lCLib -force_load ${ProjectDir}/Native/CLib/DerivedData/CLib/Build/Products/Release-iphoneos/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -249,6 +252,7 @@
     <Folder Include="Source\Framework\Implement\Utility\" />
     <Folder Include="Source\Workspace\GLGameTest\Screen\" />
     <Folder Include="Source\Framework\Implement\Settings\" />
+    <Folder Include="Source\Native\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -289,6 +293,8 @@
     <Compile Include="Source\Workspace\GLGameTest\Screen\Draw2DTestScreen.cs" />
     <Compile Include="Source\Workspace\GLGameTest\Screen\TouchTestScreen.cs" />
     <Compile Include="Source\Framework\Implement\Settings\Setting.cs" />
+    <Compile Include="Source\Native\CLib.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\Screen\StaticLinkTestScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Shader.fsh" />
