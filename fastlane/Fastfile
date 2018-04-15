@@ -6,99 +6,71 @@ platform :ios do
     #say [""]
   end
 
-  desc 'Sets the target application version or displays the current one'
-  lane :version do |options|
-    # 内部でエラーになるので機能を閉じます。
-    # dynamically getting the path results in the error `You passed invalid parameters to 'get_info_plist_value'.`
-
-    # options[:plist_path] = "./PracticeOpenGL/Info.plist"
-    # app_version(options)
-
+  # ==========================================
+  #  Create ipa for Development Build
+  # ==========================================
+  lane :Dev_Debug do
+      BuildLib()
+      provision(type: 'development')
+      BuildForVisualStudio(build_configuration: "Dev_Debug")
   end
 
-  desc 'Install provisioning profiles using match'
-  lane :provision do |options|
-    if Helper.is_ci?
-      # CI should not do stuff in ADP
-      options[:readonly] = true
-    end
-
-    # update provisioning profiles
-    match(options)
+  lane :Dev_Release do
+      BuildLib()
+      provision(type: 'development')
+      BuildForVisualStudio(build_configuration: "Dev_Release")
   end
 
-  lane :BuildIPA do |options|
-=begin
-    _args = {
-      export_path: "./",
-      export_format: "ipa"
-    }
+  # ==========================================
+  #  Create ipa for AdHoc Build
+  # ==========================================
+  lane :AdHoc_Debug do
+      BuildLib()
+      provision(type: 'adhoc')
+      BuildForVisualStudio(build_configuration: "AdHoc_Debug")
+  end
 
-    xcodebuild(
-      archive: true,
-      archive_path: DERIVED_DATA_PATH
-      scheme: 'CLib',
-      project: "./PracticeOpenGL/Native/CLib/CLib.xcodeproj",
-      configuration: "Debug",
-      #derivedDataPath: DERIVED_DATA_PATH
-      xcargs: _args
+  lane :AdHoc_Release do
+      BuildLib()
+      provision(type: 'adhoc')
+      BuildForVisualStudio(build_configuration: "AdHoc_Release")
+  end
+
+  # ==========================================
+  #  Create ipa for Enterprise Build
+  # ==========================================
+  lane :Enterprise_Debug do
+      BuildLib()
+      provision(type: 'enterprise')
+      BuildForVisualStudio(build_configuration: "Enterprise_Debug")
+  end
+
+  lane :Enterprise_Release do
+      BuildLib()
+      provision(type: 'enterprise')
+      BuildForVisualStudio(build_configuration: "Enterprise_Release")
+  end
+
+  # ==========================================
+  #  AppStore
+  # ==========================================
+  desc 'Deploys the app to the AppStore'
+  lane :AppStore do |options|
+    IncrementalBuildNumber(options)
+
+    provision(type: 'appstore')
+    BuildForVisualStudio(build_configuration: "AppStore_Release")
+
+    deliver(
+        username: ENV['USER_NAME'],
+        app_identifier: ENV['APP_IDENTIFIER'],
+        force: true
     )
-=end
-
   end
 
-  lane :CleanAll do |options|
-    puts 'Deleting old build folder'
-    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
-    `rm -rf ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}`
-  end
-
-  lane :BuildLib do |options|
-    # Clean the project
-    _workSpace = "#{ENV['XCODE_PROJECT_PATH']}#{ENV['XCODE_PROJECT_NAME']}/#{ENV['XCODE_WORKSPACE_NAME']}"
-    xcclean(workspace:_workSpace, scheme: "CLib", destination: "generic/platform=iOS")
-
-    clean_build_artifacts
-
-    # 出力用ディレクトリの生成
-    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}")
-    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/")
-    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/")
-    
-    # Debug スキームのビルドし、出力ディレクトリへコピー
-    xcodebuild(
-      configuration: "Debug",
-      destination: "generic/platform=iOS",
-      scheme: 'CLib',
-      archive: false,
-      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/archive/",
-#      derivedDataPath: XCODE_TEMP_PATH,
-      workspace: _workSpace
-    )
-    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Debug-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/libCLib.a")
-    
-    # Release スキームのビルドし、出力ディレクトリへコピー
-    xcodebuild(
-      configuration: "Release",
-      destination: "generic/platform=iOS",
-      scheme: 'CLib',
-      archive: false,
-      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/archive/",
-#      derivedDataPath: XCODE_TEMP_PATH,
-      workspace: _workSpace
-    )
-    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Release-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/libCLib.a")
-
-    # 不要ディレクトリを削除
-    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
-
-  end
-
-  desc 'for Development Adhoc'
-  lane :devAdHoc do |options|
-    AdHoc_Debug()
-  end
-
+  # ==========================================
+  #  test
+  # ==========================================
   desc 'Deploys the app to testflight'
   lane :test do |options|
     options[:changelog] = "./CHANGELOG.md"
@@ -123,35 +95,25 @@ platform :ios do
     )
   end
 
-  desc 'Deploys the app to the appstore'
-  lane :store do |options|
-    IncrementalBuildNumber(options)
+  # ==========================================
+  #  provision
+  # ==========================================
+  desc 'Install provisioning profiles using match'
+  lane :provision do |options|
+    if Helper.is_ci?
+      # CI should not do stuff in ADP
+      options[:readonly] = true
+    end
 
-    AppStore_Release()
-
-    deliver(
-        username: ENV['USER_NAME'],
-        app_identifier: ENV['APP_IDENTIFIER'],
-        force: true
-    )
-  end
-
-  #
-  # git ブランチの切り替え　※未検証
-  #
-  lane :release_branch do |options|
-      # 引数に release version が指定されていることを確認する
-      UI.user error!("Required release version. ex: fastlane release_branch version:1.0.0") unless options[:version]
-      branch = "release/#{options[:version]}"
-
-      # say "#{branch}"
+    # update provisioning profiles
+    match(options)
   end
 
   # ==========================================
-  #  private function
+  #  IncrementalBuildNumber
   # ==========================================
   desc 'Increment CFBundleVersion of Info.plist'
-  private_lane :IncrementalBuildNumber do |options|
+  lane :IncrementalBuildNumber do |options|
     #increment_build_number は、Xcode プロジェクトでのみ使用可能なため、代替処理を行う
   
     _nowBuildVersion = get_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion")
@@ -171,41 +133,65 @@ platform :ios do
     set_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion", value: _newBuildVersion)
   end
   
-  private_lane :Dev_Debug do
-      provision(type: 'development')
-      BuildForVisualStudio(build_configuration: "Dev_Debug")
+  # ==========================================
+  #  CleanAll
+  # ==========================================
+  desc 'Clean All'
+  lane :CleanAll do |options|
+    puts 'Deleting old build contents'
+    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
+    `rm -rf ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}`
+    
+    clean_build_artifacts
+  end
+  
+  # ==========================================
+  #  BuildLib
+  # ==========================================
+  desc 'Build Static Library'
+  lane :BuildLib do |options|
+    # Clean the project
+    _workSpace = "#{ENV['XCODE_PROJECT_PATH']}#{ENV['XCODE_PROJECT_NAME']}/#{ENV['XCODE_WORKSPACE_NAME']}"
+    xcclean(workspace:_workSpace, scheme: "CLib", destination: "generic/platform=iOS")
+
+    clean_build_artifacts
+
+    # 出力用ディレクトリの生成
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}")
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/")
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/")
+    
+    # Debug スキームのビルドを行い、出力ディレクトリへコピー
+    xcodebuild(
+      configuration: "Debug",
+      destination: "generic/platform=iOS",
+      scheme: 'CLib',
+      archive: false,
+      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/archive/",
+#      derivedDataPath: XCODE_TEMP_PATH,
+      workspace: _workSpace
+    )
+    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Debug-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/libCLib.a")
+    
+    # Release スキームのビルドを行い、出力ディレクトリへコピー
+    xcodebuild(
+      configuration: "Release",
+      destination: "generic/platform=iOS",
+      scheme: 'CLib',
+      archive: false,
+      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/archive/",
+#      derivedDataPath: XCODE_TEMP_PATH,
+      workspace: _workSpace
+    )
+    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Release-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/libCLib.a")
+
+    # 不要ディレクトリを削除
+    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
   end
 
-  private_lane :Dev_Release do
-      provision(type: 'development')
-      BuildForVisualStudio(build_configuration: "Dev_Release")
-  end
-
-  private_lane :AdHoc_Debug do
-      provision(type: 'adhoc')
-      BuildForVisualStudio(build_configuration: "AdHoc_Debug")
-  end
-
-  private_lane :AdHoc_Release do
-      provision(type: 'adhoc')
-      BuildForVisualStudio(build_configuration: "AdHoc_Release")
-  end
-
-  private_lane :Enterprise_Debug do
-      provision(type: 'enterprise')
-      BuildForVisualStudio(build_configuration: "Enterprise_Debug")
-  end
-
-  private_lane :Enterprise_Release do
-      provision(type: 'enterprise')
-      BuildForVisualStudio(build_configuration: "Enterprise_Release")
-  end
-
-  private_lane :AppStore_Release do
-      provision(type: 'appstore')
-      BuildForVisualStudio(build_configuration: "AppStore_Release")
-  end
-
+  # ==========================================
+  #  BuildForVisualStudio
+  # ==========================================
   desc 'Compiles the project'
   private_lane :BuildForVisualStudio do |options|
       options[:platform] = "ios"
@@ -219,6 +205,9 @@ platform :ios do
       souyuz(options)
   end
 
+  # ==========================================
+  #  after_all
+  # ==========================================
   after_all do |lane|
     #say [""]
     slack(
@@ -227,6 +216,9 @@ platform :ios do
     )
   end
 
+  # ==========================================
+  #  error
+  # ==========================================
   error do |lane, exception|
     #say ["エラー"]
 
@@ -237,6 +229,16 @@ platform :ios do
       #payload: { "Error Info" => exception.error_info.to_s } 
       payload: { "Error Info" => exception.message } 
     )
+
+  end
+
+  desc 'Sets the target application version or displays the current one'
+  lane :version do |options|
+    # 内部でエラーになるので機能を閉じます。
+    # dynamically getting the path results in the error `You passed invalid parameters to 'get_info_plist_value'.`
+
+    # options[:plist_path] = "./PracticeOpenGL/Info.plist"
+    # app_version(options)
 
   end
 end
