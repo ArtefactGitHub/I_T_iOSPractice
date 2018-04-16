@@ -99,6 +99,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
     <RunWithWarnings>true</RunWithWarnings>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Dev_Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -113,6 +114,7 @@
     <MtouchArch>ARM64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AdHoc_Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -150,7 +152,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
     <CodesignProvision>match AdHoc com.artefact.PracticeOpenGL</CodesignProvision>
-    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/DerivedData/CLib/Build/Products/Release-iphoneos -lCLib -force_load ${ProjectDir}/Native/CLib/DerivedData/CLib/Build/Products/Release-iphoneos/libCLib.a"</MtouchExtraArgs>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -173,6 +175,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
     <RunWithWarnings>true</RunWithWarnings>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -187,6 +190,7 @@
     <MtouchArch>ARM64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore_Release|iPhone' ">
     <Optimize>true</Optimize>
@@ -202,6 +206,7 @@
     <MtouchLink>SdkOnly</MtouchLink>
     <PlatformTarget>x86</PlatformTarget>
     <MtouchVerbosity>2</MtouchVerbosity>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
