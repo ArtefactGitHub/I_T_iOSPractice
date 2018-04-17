@@ -16,51 +16,76 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
-### ios version
+### ios Dev_Debug
 ```
-fastlane ios version
-```
-Sets the target application version or displays the current one
-### ios provision
-```
-fastlane ios provision
-```
-Install provisioning profiles using match
-### ios BuildIPA
-```
-fastlane ios BuildIPA
+fastlane ios Dev_Debug
 ```
 
-### ios CleanAll
+### ios Dev_Release
 ```
-fastlane ios CleanAll
-```
-
-### ios BuildLib
-```
-fastlane ios BuildLib
+fastlane ios Dev_Release
 ```
 
-### ios devAdHoc
+### ios AdHoc_Debug
 ```
-fastlane ios devAdHoc
+fastlane ios AdHoc_Debug
 ```
-for Development Adhoc
+
+### ios AdHoc_Release
+```
+fastlane ios AdHoc_Release
+```
+
+### ios Enterprise_Debug
+```
+fastlane ios Enterprise_Debug
+```
+
+### ios Enterprise_Release
+```
+fastlane ios Enterprise_Release
+```
+
+### ios AppStore
+```
+fastlane ios AppStore
+```
+Deploys the app to the AppStore
 ### ios test
 ```
 fastlane ios test
 ```
 Deploys the app to testflight
-### ios store
+### ios provision
 ```
-fastlane ios store
+fastlane ios provision
 ```
-Deploys the app to the appstore
-### ios release_branch
+Install provisioning profiles using match
+### ios Increment
 ```
-fastlane ios release_branch
+fastlane ios Increment
 ```
-
+Increment CFBundleVersion of Info.plist
+### ios IncrementalBuildNumber
+```
+fastlane ios IncrementalBuildNumber
+```
+Increment CFBundleVersion of Info.plist
+### ios CleanAll
+```
+fastlane ios CleanAll
+```
+Clean All
+### ios BuildLib
+```
+fastlane ios BuildLib
+```
+Build Static Library
+### ios version
+```
+fastlane ios version
+```
+Sets the target application version or displays the current one
 
 ----
 
