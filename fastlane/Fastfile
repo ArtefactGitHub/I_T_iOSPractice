@@ -9,6 +9,7 @@ platform :ios do
   # ==========================================
   #  Create ipa for Development Build
   # ==========================================
+  desc 'Create ipa for Development Build'
   lane :Dev_Debug do
       BuildLib()
       provision(type: 'development')
@@ -24,6 +25,7 @@ platform :ios do
   # ==========================================
   #  Create ipa for AdHoc Build
   # ==========================================
+  desc 'Create ipa for AdHoc Build'
   lane :AdHoc_Debug do
       BuildLib()
       provision(type: 'adhoc')
@@ -39,6 +41,7 @@ platform :ios do
   # ==========================================
   #  Create ipa for Enterprise Build
   # ==========================================
+  desc 'Create ipa for Enterprise Build'
   lane :Enterprise_Debug do
       BuildLib()
       provision(type: 'enterprise')
@@ -52,15 +55,21 @@ platform :ios do
   end
 
   # ==========================================
-  #  AppStore
+  #  AppStore_Release
   # ==========================================
-  desc 'Deploys the app to the AppStore'
-  lane :AppStore do |options|
-    IncrementalBuildNumber(options)
-
+  desc 'Create ipa for AppStore Build'
+  lane :AppStore_Release do |options|
     provision(type: 'appstore')
     BuildForVisualStudio(build_configuration: "AppStore_Release")
+  end
 
+  # ==========================================
+  #  Release
+  # ==========================================
+  desc 'Release to AppStore'
+  lane :Release do |options|
+    AppStore_Release()
+    
     deliver(
         username: ENV['USER_NAME'],
         app_identifier: ENV['APP_IDENTIFIER'],
@@ -73,12 +82,11 @@ platform :ios do
   # ==========================================
   desc 'Deploys the app to testflight'
   lane :test do |options|
-    options[:changelog] = "./CHANGELOG.md"
+    #options[:changelog] = "./CHANGELOG.md"
 
-    IncrementalBuildNumber(options)
+    _newBuildVersion = IncrementalBuildNumber(options)
 
-    AdHoc_Release()
-    #AppStore_Release()
+    AppStore_Release()
 
     pilot(
         # fils not found と言われてしまうので対応保留
@@ -93,6 +101,9 @@ platform :ios do
         skip_submission: false,
         skip_waiting_for_build_processing: true
     )
+    
+    # 処理が終わってからバージョン更新した info.plist をプッシュする
+    PushPList(build_version: _newBuildVersion)
   end
 
   # ==========================================
@@ -112,18 +123,34 @@ platform :ios do
   # ==========================================
   #  IncrementalBuildNumber
   # ==========================================
-  desc 'Increment CFBundleVersion of Info.plist'
-  lane :Increment do |options|
-    IncrementalBuildNumber(options)
-    
-    push_to_git_remote(
-      remote: 'origin',         # optional, default: 'origin'
-      local_branch: 'develop',  # optional, aliased by 'branch', default: 'master'
-      remote_branch: 'develop', # optional, default is set to local_branch
-      force: true,              # optional, default: false
-    )
+  desc 'Increment CFBundleVersion of Info.plist and push to remote'
+  lane :UpdateVersion do |options|
+    _newBuildVersion = IncrementalBuildNumber(options)
+    PushPList(build_version: _newBuildVersion)
   end
+
+  # ==========================================
+  #  PushPList
+  # ==========================================
+  desc 'Push Info.plist to remote'
+  lane :PushPList do |options|
+    if options[:build_version] == nil then
+        UI.important "Can not push info.plist to remote. Please specify [build_version]"
+    else
+        git_commit(path:ENV['PLIST_FILE_PATH'], message:"Updated info.plist for Build #{options[:build_version]}")
     
+        # 現在のブランチ名を取得する
+        _branchName = sh("git rev-parse --abbrev-ref HEAD")
+    
+      push_to_git_remote(
+        remote: 'origin',         # optional, default: 'origin'
+        local_branch: '#{_branchName}',  # optional, aliased by 'branch', default: 'master'
+        remote_branch: '#{_branchName}', # optional, default is set to local_branch
+        force: true,              # optional, default: false
+      )
+    end
+  end
+  
   # ==========================================
   #  IncrementalBuildNumber
   # ==========================================
@@ -136,16 +163,19 @@ platform :ios do
 
     # ビルドバージョンの指定が無い場合、現在のビルドバージョンをインクリメントする
     if options[:build_version] == nil then
-      UI.message "build_version is not specified."
+      UI.message "[build_version] is not specified."
       _newBuildVersion = _nowBuildVersion.succ
       UI.message "update build version to [#{_newBuildVersion}]"
     else
-      UI.message "build_version is specified to [#{options[:build_version]}]"
+      UI.message "[build_version] is specified to [#{options[:build_version]}]"
       _newBuildVersion = options[:build_version]
     end
 
     # plist 記載のビルドバージョンを更新する
     set_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion", value: _newBuildVersion)
+    
+    # バージョンを返す
+    _newBuildVersion
   end
   
   # ==========================================

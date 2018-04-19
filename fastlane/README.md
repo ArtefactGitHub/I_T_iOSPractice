@@ -20,7 +20,7 @@ or alternatively using `brew cask install fastlane`
 ```
 fastlane ios Dev_Debug
 ```
-
+Create ipa for Development Build
 ### ios Dev_Release
 ```
 fastlane ios Dev_Release
@@ -30,7 +30,7 @@ fastlane ios Dev_Release
 ```
 fastlane ios AdHoc_Debug
 ```
-
+Create ipa for AdHoc Build
 ### ios AdHoc_Release
 ```
 fastlane ios AdHoc_Release
@@ -40,17 +40,22 @@ fastlane ios AdHoc_Release
 ```
 fastlane ios Enterprise_Debug
 ```
-
+Create ipa for Enterprise Build
 ### ios Enterprise_Release
 ```
 fastlane ios Enterprise_Release
 ```
 
-### ios AppStore
+### ios AppStore_Release
 ```
-fastlane ios AppStore
+fastlane ios AppStore_Release
 ```
-Deploys the app to the AppStore
+Create ipa for AppStore Build
+### ios Release
+```
+fastlane ios Release
+```
+Release to AppStore
 ### ios test
 ```
 fastlane ios test
@@ -61,11 +66,16 @@ Deploys the app to testflight
 fastlane ios provision
 ```
 Install provisioning profiles using match
-### ios Increment
+### ios UpdateVersion
 ```
-fastlane ios Increment
+fastlane ios UpdateVersion
 ```
-Increment CFBundleVersion of Info.plist
+Increment CFBundleVersion of Info.plist and push to remote
+### ios PushPList
+```
+fastlane ios PushPList
+```
+Push Info.plist to remote
 ### ios IncrementalBuildNumber
 ```
 fastlane ios IncrementalBuildNumber
