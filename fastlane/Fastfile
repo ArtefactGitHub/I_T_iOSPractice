@@ -68,6 +68,8 @@ platform :ios do
   # ==========================================
   desc 'Release to AppStore'
   lane :Release do |options|
+    _newBuildVersion = IncrementalBuildNumber(options)
+
     AppStore_Release()
     
     deliver(
@@ -75,6 +77,9 @@ platform :ios do
         app_identifier: ENV['APP_IDENTIFIER'],
         force: true
     )
+
+    # 処理が終わってからバージョン更新した info.plist をプッシュする
+    PushPList(build_version: _newBuildVersion)
   end
 
   # ==========================================
