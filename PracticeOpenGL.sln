@@ -1,0 +1,45 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeOpenGL_iOS", "PracticeOpenGL\PracticeOpenGL_iOS.csproj", "{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Dev_Debug|iPhone = Dev_Debug|iPhone
+		Dev_Release|iPhone = Dev_Release|iPhone
+		AdHoc_Debug|iPhone = AdHoc_Debug|iPhone
+		AdHoc_Release|iPhone = AdHoc_Release|iPhone
+		Enterprise_Debug|iPhone = Enterprise_Debug|iPhone
+		Enterprise_Release|iPhone = Enterprise_Release|iPhone
+		AppStore|iPhone = AppStore|iPhone
+		AppStore_Release|iPhone = AppStore_Release|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Release|iPhone.ActiveCfg = Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Release|iPhone.Build.0 = Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Debug|iPhone.Build.0 = Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Dev_Debug|iPhone.ActiveCfg = Dev_Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Dev_Debug|iPhone.Build.0 = Dev_Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Dev_Release|iPhone.ActiveCfg = Dev_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Dev_Release|iPhone.Build.0 = Dev_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.AdHoc_Debug|iPhone.ActiveCfg = AdHoc_Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.AdHoc_Debug|iPhone.Build.0 = AdHoc_Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.AdHoc_Release|iPhone.ActiveCfg = AdHoc_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.AdHoc_Release|iPhone.Build.0 = AdHoc_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Enterprise_Debug|iPhone.ActiveCfg = Enterprise_Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Enterprise_Debug|iPhone.Build.0 = Enterprise_Debug|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Enterprise_Release|iPhone.ActiveCfg = Enterprise_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.Enterprise_Release|iPhone.Build.0 = Enterprise_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.AppStore_Release|iPhone.ActiveCfg = AppStore_Release|iPhone
+		{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}.AppStore_Release|iPhone.Build.0 = AppStore_Release|iPhone
+	EndGlobalSection
+EndGlobal

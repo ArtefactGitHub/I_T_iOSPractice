@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectGuid>{47DAA9EE-8B8F-49EB-BF79-AE0590EF4E4E}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PracticeOpenGL</RootNamespace>
+    <AssemblyName>PracticeOpenGL</AssemblyName>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <IOSDebuggerPort>19326</IOSDebuggerPort>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodesignProvision></CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>33166</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunWithWarnings>true</RunWithWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Dev_Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Dev_Debug</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>33166</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunWithWarnings>true</RunWithWarnings>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Dev_Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Dev_Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AdHoc_Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\AdHoc_Debug</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>33166</IOSDebuggerPort>
+    <MtouchLink>Full</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunWithWarnings>true</RunWithWarnings>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+    <CodesignProvision>match AdHoc com.artefact.PracticeOpenGL</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AdHoc_Release|iPhone' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\AdHoc_Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodesignProvision>match AdHoc com.artefact.PracticeOpenGL</CodesignProvision>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Enterprise_Debug</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>33166</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunWithWarnings>true</RunWithWarnings>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Enterprise_Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Enterprise_Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore_Release|iPhone' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\AppStore_Release</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Distribution</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <ErrorReport>prompt</ErrorReport>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <PlatformTarget>x86</PlatformTarget>
+    <MtouchVerbosity>2</MtouchVerbosity>
+    <MtouchExtraArgs>-gcc_flags "-L${ProjectDir}/Native/CLib/_Output/Debug -lCLib -force_load ${ProjectDir}/Native/CLib/_Output/Debug/libCLib.a"</MtouchExtraArgs>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="OpenTK-1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\LaunchImage.launchimage\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_172_172.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_1024_1024.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_512_512.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_256_256.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_128_128.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_64_64.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_32_32.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_16_16.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_196_196.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_88_88.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_80_80.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_87_87.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_58_58.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_55_55.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_44_44.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_76_76.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_152_152.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_167_167.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_29_29.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_40_40.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_20_20.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_120_120.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_180_180.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon_60_60.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Source\" />
+    <Folder Include="Source\Framework\" />
+    <Folder Include="Source\Workspace\" />
+    <Folder Include="Source\Framework\Interface\" />
+    <Folder Include="Source\Framework\Implement\" />
+    <Folder Include="Source\Workspace\GLGameTest\" />
+    <Folder Include="Source\Framework\Implement\Input\" />
+    <Folder Include="Source\Framework\Implement\Debugs\" />
+    <Folder Include="Source\Framework\Implement\Utility\" />
+    <Folder Include="Source\Workspace\GLGameTest\Screen\" />
+    <Folder Include="Source\Framework\Implement\Settings\" />
+    <Folder Include="Source\Native\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="GameViewController.cs" />
+    <Compile Include="Source\Framework\Interface\Game.cs" />
+    <Compile Include="Source\Framework\Interface\Screen.cs" />
+    <Compile Include="Source\Framework\Implement\GLGame.cs" />
+    <Compile Include="Source\Framework\Implement\GLGraphics.cs" />
+    <Compile Include="Source\Framework\Implement\GLScreen.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\GLGameTest.cs" />
+    <Compile Include="Source\Framework\Implement\Texture.cs" />
+    <Compile Include="Source\Framework\Implement\Vertices.cs" />
+    <Compile Include="Source\Framework\Implement\GLCommon.cs" />
+    <Compile Include="Source\Framework\Implement\GLProgram.cs" />
+    <Compile Include="Source\Framework\Implement\GLProgramParameter.cs" />
+    <Compile Include="Source\Framework\Implement\Camera2D.cs" />
+    <Compile Include="Source\Framework\Implement\TextureRegion.cs" />
+    <Compile Include="Source\Framework\Implement\SpriteBatcher.cs" />
+    <Compile Include="Source\Framework\Implement\Animation.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\AnimationSample.cs" />
+    <Compile Include="Source\Framework\Interface\IInput.cs" />
+    <Compile Include="Source\Framework\Implement\Input\IOSInput.cs" />
+    <Compile Include="Source\Framework\Interface\ITouchHandler.cs" />
+    <Compile Include="Source\Framework\Implement\Input\TouchHandler.cs" />
+    <Compile Include="Source\Framework\Implement\Pool.cs" />
+    <Compile Include="Source\Framework\Interface\IDebugLogViewer.cs" />
+    <Compile Include="Source\Framework\Implement\Debugs\DebugLogViewer.cs" />
+    <Compile Include="Source\Framework\Implement\Utility\DetectChecker.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\Screen\Draw2DTestScreen.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\Screen\TouchTestScreen.cs" />
+    <Compile Include="Source\Framework\Implement\Settings\Setting.cs" />
+    <Compile Include="Source\Native\CLib.cs" />
+    <Compile Include="Source\Workspace\GLGameTest\Screen\StaticLinkTestScreen.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Shader.fsh" />
+    <BundleResource Include="Shader.vsh" />
+    <BundleResource Include="Resources\Images\TestIcon.png" />
+    <BundleResource Include="Resources\Images\TestIconNotAlpha.png" />
+    <BundleResource Include="Resources\Images\TestIconAtlas.png" />
+    <BundleResource Include="Resources\Images\AnimationSample.png" />
+    <BundleResource Include="Resources\Images\ui_sample.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+</Project>

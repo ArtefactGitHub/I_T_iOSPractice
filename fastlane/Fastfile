@@ -1,0 +1,294 @@
+fastlane_version "2.86.1"
+default_platform :ios
+
+platform :ios do 
+  before_all do
+    #say [""]
+  end
+
+  # ==========================================
+  #  Create ipa for Development Build
+  # ==========================================
+  desc 'Create ipa for Development Build'
+  lane :Dev_Debug do
+      BuildLib()
+      provision(type: 'development')
+      BuildForVisualStudio(build_configuration: "Dev_Debug")
+  end
+
+  lane :Dev_Release do
+      BuildLib()
+      provision(type: 'development')
+      BuildForVisualStudio(build_configuration: "Dev_Release")
+  end
+
+  # ==========================================
+  #  Create ipa for AdHoc Build
+  # ==========================================
+  desc 'Create ipa for AdHoc Build'
+  lane :AdHoc_Debug do
+      BuildLib()
+      provision(type: 'adhoc')
+      BuildForVisualStudio(build_configuration: "AdHoc_Debug")
+  end
+
+  lane :AdHoc_Release do
+      BuildLib()
+      provision(type: 'adhoc')
+      BuildForVisualStudio(build_configuration: "AdHoc_Release")
+  end
+
+  # ==========================================
+  #  Create ipa for Enterprise Build
+  # ==========================================
+  desc 'Create ipa for Enterprise Build'
+  lane :Enterprise_Debug do
+      BuildLib()
+      provision(type: 'enterprise')
+      BuildForVisualStudio(build_configuration: "Enterprise_Debug")
+  end
+
+  lane :Enterprise_Release do
+      BuildLib()
+      provision(type: 'enterprise')
+      BuildForVisualStudio(build_configuration: "Enterprise_Release")
+  end
+
+  # ==========================================
+  #  AppStore_Release
+  # ==========================================
+  desc 'Create ipa for AppStore Build'
+  lane :AppStore_Release do |options|
+    provision(type: 'appstore')
+    BuildForVisualStudio(build_configuration: "AppStore_Release")
+  end
+
+  # ==========================================
+  #  Release
+  # ==========================================
+  desc 'Release to AppStore'
+  lane :Release do |options|
+    _newBuildVersion = IncrementalBuildNumber(options)
+
+    AppStore_Release()
+    
+    deliver(
+        username: ENV['USER_NAME'],
+        app_identifier: ENV['APP_IDENTIFIER'],
+        force: true
+    )
+
+    # 処理が終わってからバージョン更新した info.plist をプッシュする
+    PushPList(build_version: _newBuildVersion)
+  end
+
+  # ==========================================
+  #  test
+  # ==========================================
+  desc 'Deploys the app to testflight'
+  lane :test do |options|
+    #options[:changelog] = "./CHANGELOG.md"
+
+    _newBuildVersion = IncrementalBuildNumber(options)
+
+    AppStore_Release()
+
+    pilot(
+        # fils not found と言われてしまうので対応保留
+        #changelog: File.read(options[:changelog]), # read changelog
+        # ipa をアップロードするだけで、テスターへ配布しない場合
+        #skip_submission: true,
+        # 用途不明。現時点では指定不要。
+        #itc_provider: <ITC PROVIDER>,
+
+        username: ENV['USER_NAME'],
+        app_identifier: ENV['APP_IDENTIFIER'],
+        skip_submission: false,
+        skip_waiting_for_build_processing: true
+    )
+    
+    # 処理が終わってからバージョン更新した info.plist をプッシュする
+    PushPList(build_version: _newBuildVersion)
+  end
+
+  # ==========================================
+  #  provision
+  # ==========================================
+  desc 'Install provisioning profiles using match'
+  lane :provision do |options|
+    if Helper.is_ci?
+      # CI should not do stuff in ADP
+      options[:readonly] = true
+    end
+
+    # update provisioning profiles
+    match(options)
+  end
+
+  # ==========================================
+  #  IncrementalBuildNumber
+  # ==========================================
+  desc 'Increment CFBundleVersion of Info.plist and push to remote'
+  lane :UpdateVersion do |options|
+    _newBuildVersion = IncrementalBuildNumber(options)
+    PushPList(build_version: _newBuildVersion)
+  end
+
+  # ==========================================
+  #  PushPList
+  # ==========================================
+  desc 'Push Info.plist to remote'
+  lane :PushPList do |options|
+    if options[:build_version] == nil then
+        UI.important "Can not push info.plist to remote. Please specify [build_version]"
+    else
+        git_commit(path:ENV['PLIST_FILE_PATH'], message:"Updated info.plist for Build #{options[:build_version]}")
+    
+        # 現在のブランチ名を取得する
+        _branchName = sh("git rev-parse --abbrev-ref HEAD")
+    
+      push_to_git_remote(
+        remote: 'origin',         # optional, default: 'origin'
+        local_branch: '#{_branchName}',  # optional, aliased by 'branch', default: 'master'
+        remote_branch: '#{_branchName}', # optional, default is set to local_branch
+        force: true,              # optional, default: false
+      )
+    end
+  end
+  
+  # ==========================================
+  #  IncrementalBuildNumber
+  # ==========================================
+  desc 'Increment CFBundleVersion of Info.plist'
+  lane :IncrementalBuildNumber do |options|
+    #increment_build_number は、Xcode プロジェクトでのみ使用可能なため、代替処理を行う
+  
+    _nowBuildVersion = get_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion")
+    UI.message "cuurrent build version is [#{_nowBuildVersion}]."
+
+    # ビルドバージョンの指定が無い場合、現在のビルドバージョンをインクリメントする
+    if options[:build_version] == nil then
+      UI.message "[build_version] is not specified."
+      _newBuildVersion = _nowBuildVersion.succ
+      UI.message "update build version to [#{_newBuildVersion}]"
+    else
+      UI.message "[build_version] is specified to [#{options[:build_version]}]"
+      _newBuildVersion = options[:build_version]
+    end
+
+    # plist 記載のビルドバージョンを更新する
+    set_info_plist_value(path: ENV['PLIST_FILE_PATH'], key: "CFBundleVersion", value: _newBuildVersion)
+    
+    # バージョンを返す
+    _newBuildVersion
+  end
+  
+  # ==========================================
+  #  CleanAll
+  # ==========================================
+  desc 'Clean All'
+  lane :CleanAll do |options|
+    puts 'Deleting old build contents'
+    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
+    `rm -rf ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}`
+    
+    clean_build_artifacts
+  end
+  
+  # ==========================================
+  #  BuildLib
+  # ==========================================
+  desc 'Build Static Library'
+  lane :BuildLib do |options|
+    # Clean the project
+    _workSpace = "#{ENV['XCODE_PROJECT_PATH']}#{ENV['XCODE_PROJECT_NAME']}/#{ENV['XCODE_WORKSPACE_NAME']}"
+    xcclean(workspace:_workSpace, scheme: "CLib", destination: "generic/platform=iOS")
+
+    clean_build_artifacts
+
+    # 出力用ディレクトリの生成
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}")
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/")
+    sh("mkdir -p ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/")
+    
+    # Debug スキームのビルドを行い、出力ディレクトリへコピー
+    xcodebuild(
+      configuration: "Debug",
+      destination: "generic/platform=iOS",
+      scheme: 'CLib',
+      archive: false,
+      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/archive/",
+#      derivedDataPath: XCODE_TEMP_PATH,
+      workspace: _workSpace
+    )
+    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Debug-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Debug/libCLib.a")
+    
+    # Release スキームのビルドを行い、出力ディレクトリへコピー
+    xcodebuild(
+      configuration: "Release",
+      destination: "generic/platform=iOS",
+      scheme: 'CLib',
+      archive: false,
+      archive_path: "#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/archive/",
+#      derivedDataPath: XCODE_TEMP_PATH,
+      workspace: _workSpace
+    )
+    sh("cp ../#{ENV['XCODE_CREATED_LIB_PATH']}Release-iphoneos/libCLib.a ../#{ENV['XCODE_BUILD_OUTPUT_PATH']}Release/libCLib.a")
+
+    # 不要ディレクトリを削除
+    `rm -rf ../#{ENV['XCODE_PROJECT_PATH']}DerivedData`
+  end
+
+  # ==========================================
+  #  BuildForVisualStudio
+  # ==========================================
+  desc 'Compiles the project'
+  private_lane :BuildForVisualStudio do |options|
+      options[:platform] = "ios"
+      options[:plist_path] = ENV['PLIST_FILE_PATH']
+      options[:solution_path] = ENV['SOLUTION_FILE_PATH']
+      options[:build_target] ||= []
+      #options[:build_target] << 'Build'
+      options[:build_target] << 'Rebuild'
+
+      # this basically invokes the core souyuz build engine
+      souyuz(options)
+  end
+
+  # ==========================================
+  #  after_all
+  # ==========================================
+  after_all do |lane|
+    #say [""]
+    slack(
+      channel: "#general",
+      message: "@channel Successfully deployed new App Update!!"
+    )
+  end
+
+  # ==========================================
+  #  error
+  # ==========================================
+  error do |lane, exception|
+    #say ["エラー"]
+
+    slack(
+      channel: "#general",
+      message: "@channel Something went wrong with the deployment.",
+      success: false,
+      #payload: { "Error Info" => exception.error_info.to_s } 
+      payload: { "Error Info" => exception.message } 
+    )
+
+  end
+
+  desc 'Sets the target application version or displays the current one'
+  lane :version do |options|
+    # 内部でエラーになるので機能を閉じます。
+    # dynamically getting the path results in the error `You passed invalid parameters to 'get_info_plist_value'.`
+
+    # options[:plist_path] = "./PracticeOpenGL/Info.plist"
+    # app_version(options)
+
+  end
+end
