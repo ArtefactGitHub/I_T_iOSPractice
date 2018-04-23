@@ -150,15 +150,15 @@ namespace PracticeOpenGL.Source.Workspace.GLGameTest
             // スプライトの描画
             m_SpriteBatcher.BeginBatch(m_Texture);
             {
-                m_SpriteBatcher.DrawSprite(0, 0, 128.0f, 128.0f, m_RegionUL);
+                m_SpriteBatcher.DrawSprite(0, 700, 128.0f, 128.0f, m_RegionUL);
             }
             m_SpriteBatcher.EndBatch();
 
-            //// アニメーションの描画
+            // アニメーションの描画
             m_SpriteBatcher.BeginBatch(m_Texture);
             {
                 TextureRegion keyFrame = m_Animation.GetKeyFrame(m_AnimationSample.m_Time, Animation.ANIMATION_LOOPING);
-                m_SpriteBatcher.DrawSprite(660, 1220, 128, 128, keyFrame);
+                m_SpriteBatcher.DrawSprite(300, 700, 128, 128, keyFrame);
                 //m_SpriteBatcher.DrawSprite(0, 0, 128.0f, 128.0f, m_RegionUL2);
             }
             m_SpriteBatcher.EndBatch();
