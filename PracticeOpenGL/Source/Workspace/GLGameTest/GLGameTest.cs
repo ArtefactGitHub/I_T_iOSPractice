@@ -6,9 +6,9 @@ namespace PracticeOpenGL.Source.Workspace.GLGameTest
     {
         public override Screen GetStartScreen()
         {
-            //return new Draw2DTestScreen(this);
+            return new Draw2DTestScreen(this);
             //return new TouchTestScreen(this);
-            return new StaticLinkTestScreen(this);
+            //return new StaticLinkTestScreen(this);
         }
     }
 }
