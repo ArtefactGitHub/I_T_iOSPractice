@@ -1,10 +1,10 @@
 # I_T_iOSPractice
 
-iOS ゲームアプリの個人研究・検証用のプロジェクトです。
+iOS で OpenTK ライブラリを利用した描画処理の、個人研究・検証用のプロジェクトです。
 
 下記について検証などを行なっています。
-- Visutal Studio for Mac と OpenTK を利用した描画処理
-- Xcode で生成した静的ライブラリの組み込み
+- OpenTK を利用したスプライトテクスチャ描画処理
+- Visual Studio ビルドへの、Xcode で生成した静的ライブラリの組み込み
 - fastlane を利用したアプリ開発フローの自動化
 - Jenkins を利用したアプリ開発フローの自動化
 
